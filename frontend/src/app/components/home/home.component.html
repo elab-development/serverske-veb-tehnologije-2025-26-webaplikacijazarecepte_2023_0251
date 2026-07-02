@@ -7,9 +7,8 @@
       <p class="text-xl md:text-2xl mb-12 drop-shadow-md">
         Napravljeno od kuvara za kuvare!
       </p>
-      
-      <app-button 
-        variant="primary" 
+      <app-button
+        variant="primary"
         (buttonClick)="navigateToBrowse()"
         class="text-lg px-8 py-3 drop-shadow-lg"
       >
@@ -19,24 +18,84 @@
   </div>
 </div>
 
-<div class="flex w-full h-[50vh]">
-  <div class="flex-1 bg-so1 flex items-center justify-center p-8">
-    <div class="text-center">
-      <h2 class="text-2xl md:text-3xl font-bold text-so2 mb-4">
+<div class="flex flex-col md:flex-row w-full md:h-[50vh] min-h-[50vh]">
+  <!-- Recipe of the Month panel -->
+  <div class="flex-1 bg-so1 flex flex-col items-center justify-center p-6 md:p-8 border-b md:border-b-0 md:border-r border-so2/20">
+    <div class="text-center w-full max-w-md" *ngIf="recipeOfMonth; else noRecipe">
+      <span class="inline-block bg-so2 text-light text-xs font-semibold px-3 py-1 rounded-full mb-3">
         Recept meseca
+      </span>
+      <h2 class="text-2xl md:text-3xl font-bold text-so2 mb-2 hover:underline cursor-pointer" (click)="navigateToRecipe()">
+        {{ recipeOfMonth.name }}
       </h2>
+      <p class="text-sm text-so2/70 mb-2">Autor: {{ recipeOfMonth.creator }}</p>
+      <div class="flex items-center justify-center gap-2 mb-3">
+        <span class="text-lg font-semibold text-so2">{{ recipeRating }}</span>
+        <span class="text-sm text-so2/60">{{ getTasteDisplay(recipeOfMonth.taste) }}</span>
+      </div>
+      <p class="text-sm text-so2/80 line-clamp-3 mb-4">{{ recipeOfMonth.description }}</p>
+      <app-button variant="secondary" (buttonClick)="navigateToRecipe()">
+        Pogledaj recept
+      </app-button>
     </div>
+    <ng-template #noRecipe>
+      <div class="text-center">
+        <h2 class="text-2xl md:text-3xl font-bold text-so2 mb-4">Recept meseca</h2>
+        <p class="text-so2/60">Jos uvek nema recepata. Budite prvi!</p>
+      </div>
+    </ng-template>
   </div>
-  
-  <div class="flex-1 bg-so2 flex items-center justify-center p-8">
-    <div class="text-center">
-      <h2 class="text-2xl md:text-3xl font-bold text-light mb-4">
-        Recept log - blog za ljubitelje kuvanja
+
+  <!-- News panel -->
+  <div class="flex-1 bg-so2 flex flex-col items-center justify-center p-6 md:p-8">
+    <div class="text-center w-full max-w-md">
+      <h2 class="text-2xl md:text-3xl font-bold text-light mb-2">
+        Recept log
       </h2>
-      <p class="text-lg text-light/90">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga porro eius quo corrupti rerum! Quisquam praesentium adipisci tempore repellendus, ipsum harum deserunt est similique quae omnis magni corporis voluptatem provident?
-      </p>
-      <app-button variant="secondary" class="mt-4">Pročitajte više</app-button>
+      <p class="text-sm text-light/60 mb-4">Kulinarske vesti i novosti</p>
+
+      <div *ngIf="loadingNews" class="flex justify-center py-4">
+        <span class="inline-block w-6 h-6 border-2 border-light border-t-transparent rounded-full animate-spin"></span>
+      </div>
+
+      <ul class="space-y-3 text-left" *ngIf="!loadingNews && newsArticles.length > 0; else noNews">
+        <li
+          *ngFor="let article of newsArticles"
+          class="bg-light/10 rounded-lg p-3 hover:bg-light/20 transition-colors"
+        >
+          <a
+            [href]="article.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="block"
+          >
+            <div class="flex items-start gap-2 mb-1">
+              <span
+                class="text-xs px-2 py-0.5 rounded-full whitespace-nowrap"
+                [ngClass]="{
+                  'bg-sw1/30 text-sw1': article.category === 'Recepti',
+                  'bg-sa1/30 text-sa2': article.category === 'Ishrana',
+                  'bg-sp1/30 text-sp2': article.category === 'Kulinarstvo'
+                }"
+              >
+                {{ article.category }}
+              </span>
+            </div>
+            <h3 class="text-light font-semibold text-sm leading-snug">
+              {{ article.title }}
+            </h3>
+            <p class="text-light/70 text-xs mt-1 line-clamp-2">
+              {{ article.description }}
+            </p>
+          </a>
+        </li>
+      </ul>
+
+      <ng-template #noNews>
+        <p class="text-light/60" *ngIf="!loadingNews">Nema dostupnih vesti.</p>
+      </ng-template>
+
+      <p class="text-light/40 text-xs mt-4" *ngIf="newsSource">{{ newsSource }}</p>
     </div>
   </div>
 </div>
