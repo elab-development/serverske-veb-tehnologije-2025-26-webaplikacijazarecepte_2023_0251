@@ -1,0 +1,157 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "marko123",
+      "email": "marko@example.com",
+      "password": "password123",
+      "liked": [
+        2,
+        5
+      ]
+    },
+    {
+      "id": 2,
+      "username": "ana.petrovic",
+      "email": "ana.petrovic@example.com",
+      "password": "securepass",
+      "liked": [
+        1,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 3,
+      "username": "stefan_chef",
+      "email": "stefan@example.com",
+      "password": "chefpass",
+      "liked": [
+        1,
+        2
+      ]
+    }
+  ],
+  "recipes": [
+    {
+      "id": 1,
+      "name": "Pileći šnicel sa krompirom",
+      "creator": "marko123",
+      "taste": "slano",
+      "meat": "piletina",
+      "occasion": "rucak",
+      "cookingMethod": "przeno",
+      "timeToMake": 45,
+      "ingredientWeight": 1.2,
+      "ingredients": "500g pilećih prsa, 4 krompira, 2 jajeta, 100g brašna, 200g prezli, ulje za prženje, so, biber",
+      "description": "Klasičan pileći šnicel sa hrskavom prezlom i kremastim krompirom. Idealno za porodični ručak.",
+      "ratings": [
+        {
+          "username": "ana.petrovic",
+          "rating": 5,
+          "comment": "Odličan recept! Deca su ga obožila.",
+          "dateRated": "2024-07-15T18:30:00.000Z"
+        },
+        {
+          "username": "stefan_chef",
+          "rating": 4,
+          "comment": "Dobar recept, samo bih dodao više začina.",
+          "dateRated": "2024-07-20T12:15:00.000Z"
+        }
+      ],
+      "averageRating": 4.5,
+      "totalRatings": 2
+    },
+    {
+      "id": 2,
+      "name": "Čorba od paradajza",
+      "creator": "ana.petrovic",
+      "taste": "kiselo",
+      "meat": "",
+      "occasion": "vecera",
+      "cookingMethod": "kuvano",
+      "timeToMake": 30,
+      "ingredientWeight": 0.8,
+      "ingredients": "1kg svežeg paradajza, 1 crni luk, 2 čena belog luka, 200ml pavlake, maslinovo ulje, so, šećer, bosiljak",
+      "description": "Kremasta čorba od paradajza sa svežim bosiljkom. Savršena za hladne dane.",
+      "ratings": [
+        {
+          "username": "marko123",
+          "rating": 5,
+          "comment": "Fantastična čorba! Moja nova omiljena.",
+          "dateRated": "2024-07-18T19:45:00.000Z"
+        }
+      ],
+      "averageRating": 5.0,
+      "totalRatings": 1
+    },
+    {
+      "id": 3,
+      "name": "Goveđi gulaš sa knedlama",
+      "creator": "stefan_chef",
+      "taste": "ljuto",
+      "meat": "govedina",
+      "occasion": "rucak",
+      "cookingMethod": "kuvano",
+      "timeToMake": 120,
+      "ingredientWeight": 2.5,
+      "ingredients": "1kg goveđeg mesa, 3 crna luka, 2 crvene paprike, 2 kašike ajvara, 1 kašička mlevene paprike, 200g brašna za knedlice, 2 jajeta, mleko, so, biber",
+      "description": "Tradicionalni srpski gulaš sa mekim knedlama. Dugo se kuva da meso bude mekano.",
+      "ratings": [
+        {
+          "username": "ana.petrovic",
+          "rating": 4,
+          "comment": "Ukusno, ali treba dugo da se kuva.",
+          "dateRated": "2024-07-22T14:20:00.000Z"
+        },
+        {
+          "username": "marko123",
+          "rating": 5,
+          "comment": "Autentičan ukus! Kao kod bake.",
+          "dateRated": "2024-07-25T16:10:00.000Z"
+        }
+      ],
+      "averageRating": 4.5,
+      "totalRatings": 2
+    },
+    {
+      "id": 4,
+      "name": "Riba na žaru sa povrćem",
+      "creator": "marko123",
+      "taste": "slano",
+      "meat": "riba",
+      "occasion": "vecera",
+      "cookingMethod": "grilovano",
+      "timeToMake": 25,
+      "ingredientWeight": 1.0,
+      "ingredients": "1 cela riba (šaran ili som), 2 tikvice, 1 patlidžan, 2 paprike, maslinovo ulje, limun, so, začini za ribu",
+      "description": "Sveža riba pečena na roštilju sa sezonskim povrćem. Zdravo i ukusno.",
+      "ratings": [
+        {
+          "username": "stefan_chef",
+          "rating": 5,
+          "comment": "Savršeno za letnje večeri!",
+          "dateRated": "2024-07-28T20:30:00.000Z"
+        }
+      ],
+      "averageRating": 5.0,
+      "totalRatings": 1
+    },
+    {
+      "id": 5,
+      "name": "Čokoladna torta",
+      "creator": "ana.petrovic",
+      "taste": "slatko",
+      "meat": "",
+      "occasion": "desert",
+      "cookingMethod": "peceno",
+      "timeToMake": 90,
+      "ingredientWeight": 1.5,
+      "ingredients": "200g tamne čokolade, 150g putera, 4 jajeta, 200g šećera, 100g brašna, kakao u prahu, 200ml slatke pavlake, vanila ekstrakt",
+      "description": "Bogata čokoladna torta sa kremastim glazurom. Idealna za posebne prilike.",
+      "ratings": [],
+      "averageRating": 0,
+      "totalRatings": 0
+    }
+  ]
+}

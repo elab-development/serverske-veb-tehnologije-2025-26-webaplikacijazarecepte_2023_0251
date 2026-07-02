@@ -1,0 +1,15 @@
+<button 
+  receptiButton
+  [type]="type"
+  [disabled]="disabled || loading"
+  (click)="onClick($event)"
+>
+  
+  <span 
+    *ngIf="loading" 
+    class="inline-block w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full animate-spin"
+  ></span>
+  
+  
+  <ng-content></ng-content>
+</button>

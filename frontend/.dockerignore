@@ -1,0 +1,46 @@
+# Ignorisane datoteke i direktorijumi za Docker build frontend aplikacije
+
+# Angular/Node.js
+/node_modules
+/dist
+/tmp
+/out-tsc
+
+# Profiling files
+chrome-profiler-events*.json
+speed-measure-plugin*.json
+
+# IDEs i editori
+.settings/
+.vscode/*
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+docker-compose.*.yml
+
+# Git i development fajlovi
+.git
+.gitignore
+README.md
+.github
+
+# Sistemski fajlovi
+.DS_Store
+Thumbs.db
+
+# Env fajlovi (koristiće se oni iz bind mounta)
+#.env
+
+# Testovi i debug
+/coverage
+/.nyc_output
+karma.conf.js
+protractor.conf.js
+
+# Misc
+npm-debug.log
+yarn-error.log
+testem.log
+/.sass-cache

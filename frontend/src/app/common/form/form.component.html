@@ -1,0 +1,105 @@
+<form receptiForm [formGroup]="form" (ngSubmit)="onSubmit()">
+  <h2 class="text-xl font-bold text-center mb-6">{{ formTitle }}</h2>
+
+  <div class="w-full space-y-4">
+    <div *ngFor="let field of formFields" class="w-full">
+      <label class="block text-sm font-medium mb-1 text-left w-full">
+        {{ field.label }}
+        <span *ngIf="field.required" class="text-red-500">*</span>
+      </label>
+
+      <input
+        *ngIf="field.type === 'text' || field.type === 'email' || field.type === 'password' || field.type === 'number'"
+        receptiInput
+        [formControlName]="field.name"
+        [type]="field.type"
+        [placeholder]="field.placeholder || ''"
+        [required]="field.required || false"
+        class="w-full"
+      />
+
+      <textarea
+        *ngIf="field.type === 'textarea'"
+        receptiInput
+        [formControlName]="field.name"
+        [placeholder]="field.placeholder || ''"
+        [required]="field.required || false"
+        rows="4"
+        class="w-full resize-none !rounded-lg"
+      ></textarea>
+
+      <select
+        *ngIf="field.type === 'select'"
+        receptiSelect
+        [formControlName]="field.name"
+        [required]="field.required || false"
+        class="w-full"
+      >
+        <option value="" disabled>Select {{ field.label }}</option>
+        <option 
+          *ngFor="let option of field.options" 
+          [value]="option.value"
+        >
+          {{ option.label }}
+        </option>
+      </select>
+
+      <div *ngIf="field.name === 'rating' && variant === 'rating'" class="flex items-center justify-center space-x-1 py-2">
+        <button
+          *ngFor="let star of getStars()"
+          type="button"
+          (click)="setRating(star)"
+          (mouseenter)="setHoveredRating(star)"
+          (mouseleave)="clearHoveredRating()"
+          class="text-3xl hover:scale-110 transition-transform duration-200 focus:outline-none"
+          [ngClass]="getStarClass(star)"
+        >
+          ⭐
+        </button>
+      </div>
+
+      <input
+        *ngIf="field.name === 'rating' && variant === 'rating'"
+        type="hidden"
+        [formControlName]="field.name"
+      />
+
+      <div 
+        *ngIf="getFieldError(field.name)" 
+        class="text-red-500 text-xs mt-1 text-left w-full"
+      >
+        {{ getFieldError(field.name) }}
+      </div>
+    </div>
+  </div>
+
+    <app-button 
+      type="submit" 
+      variant="primary"
+      [loading]="isLoading"
+      [disabled]="form.invalid"
+      class="w-full"
+    >
+      {{ submitButtonText }}
+    </app-button>
+
+  <div *ngIf="variant === 'login' || variant === 'signup'" class="w-full mt-4 text-center">
+    <div *ngIf="variant === 'login'" class="text-sm">
+      <span class="text-so2/70">Nemate nalog? </span>
+      <a routerLink="/signup" class="text-so2 hover:text-so2/80 underline font-medium">
+        Registrujte se
+      </a>
+    </div>
+    <div *ngIf="variant === 'signup'" class="text-sm">
+      <span class="text-so2/70">Već imate nalog? </span>
+      <a routerLink="/login" class="text-so2 hover:text-so2/80 underline font-medium">
+        Prijavite se
+      </a>
+    </div>
+  </div>
+
+  <div class="w-full mt-4 p-3 bg-gray-100 rounded text-xs" style="display: none;">
+    <strong>Form Status:</strong> {{ form.valid ? 'Valid' : 'Invalid' }}<br>
+    <strong>Form Value:</strong> {{ form.value | json }}
+  </div>
+</form>

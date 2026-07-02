@@ -1,0 +1,61 @@
+.github/copilot-instructions.md
+.continue/
+docs/
+
+backend/node_modules/
+frontend/node_modules/
+
+# Angular gitignore
+
+# Compiled output
+dist/
+coverage/
+.angular/
+/tmp
+/out-tsc
+/bazel-out
+
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
+
+# Screenshots
+*.png
+
+#Development tools
+tools/
+tests/
+
+# Temporary helper scripts
+_*.py
+_*.cjs
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Testing
+coverage/
+.playwright-mcp/
+
+# IDEs
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build caches
+.tsbuildinfo
+

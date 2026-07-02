@@ -1,0 +1,21 @@
+<select 
+  receptiSelect
+  [value]="value"
+  [disabled]="disabled"
+  [id]="id"
+  [name]="name"
+  (change)="onSelectionChange($event)"
+  class="w-full"
+>
+  <option value="" disabled [selected]="!value">
+    {{ placeholder }}
+  </option>
+  <option 
+    *ngFor="let option of options" 
+    [value]="option.value"
+    [disabled]="option.disabled"
+    [selected]="option.value === value"
+  >
+    {{ option.label }}
+  </option>
+</select>

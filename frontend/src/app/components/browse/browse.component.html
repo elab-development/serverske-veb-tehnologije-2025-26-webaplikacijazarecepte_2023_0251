@@ -1,0 +1,116 @@
+<div class="flex w-full h-full pt-20">
+  <app-sidebar 
+    [items]="sidebarItems"
+    [isOpen]="isSidebarOpen"
+    title="Menu"
+    (itemClick)="onSidebarItemClick($event)"
+    (toggleSidebar)="onSidebarToggle($event)"
+    (filterChange)="onFilterChange($event)"
+    (searchChange)="onSearchChange($event)">
+  </app-sidebar>
+
+  <div 
+    class="flex-1 transition-all duration-300"
+    [ngClass]="{
+      'pl-6': !isSidebarOpen,
+      'pl-72': isSidebarOpen
+    }"
+  >
+    <div class="container mx-auto px-6">
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-dark mb-2">Pretraži recepte</h1>
+        <div class="flex justify-between items-center">
+          <p class="text-so2/70">{{ showingRange }}</p>
+          
+          <button 
+            *ngIf="hasActiveFilters()"
+            (click)="clearAllFilters()"
+            class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-dark rounded-md transition-colors text-sm"
+          >
+            Obriši filtere
+          </button>
+        </div>
+
+        <div *ngIf="hasActiveFilters()" class="mt-4">
+          <div class="flex flex-wrap gap-2">
+            <span class="text-sm text-so2/70 mr-2">Aktivni filteri:</span>
+            
+            <span *ngIf="filters.taste" class="inline-block px-2 py-1 bg-sw1 text-sw2 text-xs rounded-full">
+              Ukus: {{ getFilterDisplayValue('taste', filters.taste) }}
+            </span>
+            
+            <span *ngIf="filters.meat" class="inline-block px-2 py-1 bg-sa1 text-sa2 text-xs rounded-full">
+              Meso: {{ getFilterDisplayValue('meat', filters.meat) }}
+            </span>
+            
+            <span *ngIf="filters.method" class="inline-block px-2 py-1 bg-so1 text-so2 text-xs rounded-full">
+              Način: {{ getFilterDisplayValue('method', filters.method) }}
+            </span>
+            
+            <span *ngIf="filters.maxTime" class="inline-block px-2 py-1 bg-sp1 text-sp2 text-xs rounded-full">
+              Maks. vreme: {{ filters.maxTime }} min
+            </span>
+            
+            <span *ngIf="filters.maxWeight" class="inline-block px-2 py-1 bg-gray-100 text-dark text-xs rounded-full">
+              Maks. težina: {{ filters.maxWeight }} kg
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="recipes.length === 0" class="flex justify-center items-center py-12">
+        <div class="text-center">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-so2 mx-auto mb-4"></div>
+          <p class="text-so2/70">Učitavanje recepata...</p>
+        </div>
+      </div>
+
+      <div *ngIf="recipes.length > 0" class="mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <app-card 
+            *ngFor="let recipe of paginatedRecipes" 
+            [recipe]="recipe"
+            class="recipe-card"
+          ></app-card>
+        </div>
+
+        <div *ngIf="paginatedRecipes.length === 0" class="text-center py-12">
+          <p class="text-xl text-so2/70">Nema recepata za prikaz</p>
+        </div>
+      </div>
+
+      <div *ngIf="totalPages > 1" class="flex justify-center items-center space-x-2 py-8">
+        <button 
+          (click)="previousPage()"
+          [disabled]="currentPage === 1"
+          class="px-3 py-2 rounded-md bg-so2 text-so1 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed hover:bg-so2/80 transition-colors"
+        >
+          ‹ Prethodna
+        </button>
+
+        <div class="flex space-x-1">
+          <button
+            *ngFor="let page of pages"
+            (click)="goToPage(page)"
+            [class]="page === currentPage ? 'bg-so2 text-so1' : 'bg-gray-100 text-dark hover:bg-gray-200'"
+            class="px-3 py-2 rounded-md transition-colors min-w-[40px]"
+          >
+            {{ page }}
+          </button>
+        </div>
+
+        <button 
+          (click)="nextPage()"
+          [disabled]="currentPage === totalPages"
+          class="px-3 py-2 rounded-md bg-so2 text-so1 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed hover:bg-so2/80 transition-colors"
+        >
+          Sledeća ›
+        </button>
+      </div>
+
+      <div *ngIf="totalPages > 1" class="text-center text-sm text-so2/70 pb-8">
+        Strana {{ currentPage }} od {{ totalPages }}
+      </div>
+    </div>
+  </div>
+</div>
