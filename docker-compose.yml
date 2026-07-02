@@ -1,0 +1,33 @@
+services:
+  # MongoDB servis
+  mongodb:
+    image: mongo:4.4
+    container_name: cloud-recepti-mongodb
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    ports:
+      - "${MONGO_PORT}:27017"
+
+
+  # Frontend servis - Angular aplikacija
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: cloud-recepti-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    env_file:
+      - .env
+    environment:
+      - API_URL=${API_URL}
+    ports:
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+
+

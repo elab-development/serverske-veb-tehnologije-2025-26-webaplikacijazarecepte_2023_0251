@@ -1,0 +1,36 @@
+# Ignorisane datoteke i direktorijumi za Docker build backend aplikacije
+
+# Node.js
+node_modules
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+docker-compose.*.yml
+
+# Env fajlovi (koristiće se oni iz bind mounta)
+#.env
+
+# Git i development fajlovi
+.git
+.gitignore
+README.md
+.github
+.vscode
+*.swp
+*.swo
+
+# Testovi
+__tests__
+tests
+test
+
+# Ostalo
+*.log
+logs
+temp
+tmp
