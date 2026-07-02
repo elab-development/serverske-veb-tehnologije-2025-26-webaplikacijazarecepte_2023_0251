@@ -5,31 +5,56 @@
       "username": "marko123",
       "email": "marko@example.com",
       "password": "password123",
-      "liked": [
-        2,
-        5
-      ]
+      "liked": [2, 5]
     },
     {
       "id": 2,
       "username": "ana.petrovic",
       "email": "ana.petrovic@example.com",
       "password": "securepass",
-      "liked": [
-        1,
-        3,
-        4
-      ]
+      "liked": [1, 3, 4]
     },
     {
       "id": 3,
       "username": "stefan_chef",
       "email": "stefan@example.com",
       "password": "chefpass",
-      "liked": [
-        1,
-        2
-      ]
+      "liked": [1, 2]
+    },
+    {
+      "id": 4,
+      "username": "jelena_kuvar",
+      "email": "jelena.kuvar@example.com",
+      "password": "jelenapass",
+      "liked": [3, 6, 8]
+    },
+    {
+      "id": 5,
+      "username": "nikola.m",
+      "email": "nikola.m@example.com",
+      "password": "nikola321",
+      "liked": [1, 7, 10]
+    },
+    {
+      "id": 6,
+      "username": "milica_foodie",
+      "email": "milica.foodie@example.com",
+      "password": "milicapass",
+      "liked": [2, 5, 9, 12]
+    },
+    {
+      "id": 7,
+      "username": "djordje_kuvac",
+      "email": "djordje@example.com",
+      "password": "djordjepass",
+      "liked": [4, 6, 11]
+    },
+    {
+      "id": 8,
+      "username": "tamara.t",
+      "email": "tamara.t@example.com",
+      "password": "tamarapass",
+      "liked": [5, 8, 13]
     }
   ],
   "recipes": [
@@ -152,6 +177,284 @@
       "ratings": [],
       "averageRating": 0,
       "totalRatings": 0
+    },
+    {
+      "id": 6,
+      "name": "Musaka od krompira",
+      "creator": "jelena_kuvar",
+      "taste": "slano",
+      "meat": "svinjetina",
+      "occasion": "rucak",
+      "cookingMethod": "peceno",
+      "timeToMake": 90,
+      "ingredientWeight": 2.0,
+      "ingredients": "800g krompira, 500g mlevenog svinjskog mesa, 2 crna luka, 3 jajeta, 300ml kisele pavlake, 100ml ulja, so, biber, aleva paprika",
+      "description": "Tradicionalna srpska musaka sa slojevima krompira i mlevenog mesa, preliven kremastim sosom od jaja i pavlake.",
+      "ratings": [
+        {
+          "username": "nikola.m",
+          "rating": 5,
+          "comment": "Tačno onako kako treba! Savršena musaka.",
+          "dateRated": "2024-08-01T13:00:00.000Z"
+        },
+        {
+          "username": "djordje_kuvac",
+          "rating": 4,
+          "comment": "Jako dobra, sledeći put ću dodati više mesa.",
+          "dateRated": "2024-08-05T14:30:00.000Z"
+        }
+      ],
+      "averageRating": 4.5,
+      "totalRatings": 2
+    },
+    {
+      "id": 7,
+      "name": "Pasulj sa rebarcima",
+      "creator": "nikola.m",
+      "taste": "slano",
+      "meat": "svinjetina",
+      "occasion": "rucak",
+      "cookingMethod": "kuvano",
+      "timeToMake": 150,
+      "ingredientWeight": 1.8,
+      "ingredients": "500g suvog pasulja, 400g dimljenih rebaraca, 2 crna luka, 3 čena belog luka, 1 crvena paprika, 2 kašike aleve paprike, 2 lista lovora, so, biber, vegeta",
+      "description": "Bogati srpski pasulj sa dimljenim rebarcima, kuvano na tradiconalan način. Idealno za hladne zimske dane.",
+      "ratings": [
+        {
+          "username": "marko123",
+          "rating": 5,
+          "comment": "Remek delo! Bolje nego u restoranu.",
+          "dateRated": "2024-08-03T19:00:00.000Z"
+        },
+        {
+          "username": "jelena_kuvar",
+          "rating": 5,
+          "comment": "Pravi domaći ukus, preporučujem svima.",
+          "dateRated": "2024-08-07T20:15:00.000Z"
+        }
+      ],
+      "averageRating": 5.0,
+      "totalRatings": 2
+    },
+    {
+      "id": 8,
+      "name": "Punjene paprike",
+      "creator": "jelena_kuvar",
+      "taste": "slano",
+      "meat": "mešano",
+      "occasion": "rucak",
+      "cookingMethod": "kuvano",
+      "timeToMake": 75,
+      "ingredientWeight": 1.6,
+      "ingredients": "8 babura paprika, 400g mlevenog mesa (junetina+svinjetina), 150g pirinča, 2 crna luka, 2 jajeta, 500ml paradajz soka, so, biber, aleva paprika, peršun",
+      "description": "Klasične srpske punjene paprike u paradajz sosu. Recept koji se prenosi sa kolena na koleno.",
+      "ratings": [
+        {
+          "username": "tamara.t",
+          "rating": 5,
+          "comment": "Odlične! Tačno kao kod mame.",
+          "dateRated": "2024-08-10T18:45:00.000Z"
+        },
+        {
+          "username": "djordje_kuvac",
+          "rating": 4,
+          "comment": "Veoma ukusne, sos je fantastičan.",
+          "dateRated": "2024-08-12T13:20:00.000Z"
+        }
+      ],
+      "averageRating": 4.5,
+      "totalRatings": 2
+    },
+    {
+      "id": 9,
+      "name": "Grčka salata",
+      "creator": "milica_foodie",
+      "taste": "kiselo",
+      "meat": "",
+      "occasion": "vecera",
+      "cookingMethod": "sirovo",
+      "timeToMake": 10,
+      "ingredientWeight": 0.7,
+      "ingredients": "3 paradajza, 1 krastavac, 1 zelena paprika, 100g feta sira, crne masline, crveni luk, maslinovo ulje, origano, so",
+      "description": "Sveža i lagana grčka salata sa feta sirom i maslinama. Savršena kao lagana večera ili prilog.",
+      "ratings": [
+        {
+          "username": "ana.petrovic",
+          "rating": 4,
+          "comment": "Osvežavajuće i ukusno, idealno za leto.",
+          "dateRated": "2024-08-14T20:00:00.000Z"
+        },
+        {
+          "username": "milica_foodie",
+          "rating": 5,
+          "comment": "Moj omiljeni recept za letnje večeri!",
+          "dateRated": "2024-08-15T19:30:00.000Z"
+        }
+      ],
+      "averageRating": 4.5,
+      "totalRatings": 2
+    },
+    {
+      "id": 10,
+      "name": "Rolovana piletina sa šunkom i sirom",
+      "creator": "djordje_kuvac",
+      "taste": "slano",
+      "meat": "piletina",
+      "occasion": "vecera",
+      "cookingMethod": "peceno",
+      "timeToMake": 60,
+      "ingredientWeight": 1.1,
+      "ingredients": "4 pilećih batkova bez kosti, 150g šunke, 150g kačkavalja, 2 čena belog luka, maslinovo ulje, ruzmarin, timijan, so, biber",
+      "description": "Sočna piletina punjena šunkom i sirom, pečena u rerni do zlatno-smeđe boje. Elegantno jelo za posebne prilike.",
+      "ratings": [
+        {
+          "username": "nikola.m",
+          "rating": 5,
+          "comment": "Impresivno jelo, gosti su bili oduševljeni!",
+          "dateRated": "2024-08-16T20:00:00.000Z"
+        }
+      ],
+      "averageRating": 5.0,
+      "totalRatings": 1
+    },
+    {
+      "id": 11,
+      "name": "Palačinke sa Nutelom",
+      "creator": "tamara.t",
+      "taste": "slatko",
+      "meat": "",
+      "occasion": "desert",
+      "cookingMethod": "przeno",
+      "timeToMake": 30,
+      "ingredientWeight": 0.6,
+      "ingredients": "250g brašna, 2 jajeta, 500ml mleka, 2 kašike šećera, 1 kašičica vanila ekstrakta, prstohvat soli, ulje za prženje, Nutela za punjenje",
+      "description": "Tanke i mekane palačinke punjene Nutelom. Omiljeni desert i dece i odraslih, gotov za tren.",
+      "ratings": [
+        {
+          "username": "djordje_kuvac",
+          "rating": 5,
+          "comment": "Savršene palačinke, tanke i mekane!",
+          "dateRated": "2024-08-18T16:00:00.000Z"
+        },
+        {
+          "username": "stefan_chef",
+          "rating": 4,
+          "comment": "Odlične, ja volim i sa džemom od kajsije.",
+          "dateRated": "2024-08-19T15:30:00.000Z"
+        }
+      ],
+      "averageRating": 4.5,
+      "totalRatings": 2
+    },
+    {
+      "id": 12,
+      "name": "Losos sa limunovim puterom",
+      "creator": "milica_foodie",
+      "taste": "slano",
+      "meat": "riba",
+      "occasion": "vecera",
+      "cookingMethod": "peceno",
+      "timeToMake": 25,
+      "ingredientWeight": 0.9,
+      "ingredients": "2 fileta lososa, 50g putera, 1 limun, 3 čena belog luka, sveži timijan, so, biber, maslinovo ulje",
+      "description": "Sočan losos pečen u rerni sa aromatičnim limunovim puterom i belim lukom. Brzo, zdravo i elegantno jelo.",
+      "ratings": [
+        {
+          "username": "tamara.t",
+          "rating": 5,
+          "comment": "Presavršeno! Losos je bio sočan i aromatičan.",
+          "dateRated": "2024-08-20T19:45:00.000Z"
+        },
+        {
+          "username": "jelena_kuvar",
+          "rating": 5,
+          "comment": "Pravim ovo svake nedelje, cela porodica obožava.",
+          "dateRated": "2024-08-21T20:00:00.000Z"
+        }
+      ],
+      "averageRating": 5.0,
+      "totalRatings": 2
+    },
+    {
+      "id": 13,
+      "name": "Veganski burito",
+      "creator": "nikola.m",
+      "taste": "ljuto",
+      "meat": "",
+      "occasion": "rucak",
+      "cookingMethod": "przeno",
+      "timeToMake": 20,
+      "ingredientWeight": 0.5,
+      "ingredients": "4 tortilje, 1 konzerva crnog pasulja, 1 kukuruz, 1 avokado, 2 paradajza, 1 crveni luk, 1 jalapeño, sok od limuna, kumin, koriander, so",
+      "description": "Brz i hranljiv veganski burito sa crnim pasuljem, avokadoom i svežim povrćem. Savršen za brzi ručak.",
+      "ratings": [
+        {
+          "username": "milica_foodie",
+          "rating": 4,
+          "comment": "Jako dobro za veganski obrok, svakako preporučujem!",
+          "dateRated": "2024-08-22T13:00:00.000Z"
+        },
+        {
+          "username": "ana.petrovic",
+          "rating": 4,
+          "comment": "Iznenađujuće ukusno i zasitno.",
+          "dateRated": "2024-08-23T12:30:00.000Z"
+        }
+      ],
+      "averageRating": 4.0,
+      "totalRatings": 2
+    },
+    {
+      "id": 14,
+      "name": "Krem supa od bundeve",
+      "creator": "tamara.t",
+      "taste": "slano",
+      "meat": "",
+      "occasion": "vecera",
+      "cookingMethod": "kuvano",
+      "timeToMake": 40,
+      "ingredientWeight": 1.0,
+      "ingredients": "1kg bundeve, 1 crni luk, 2 čena belog luka, 500ml povrtnog bujona, 200ml kokosovog mleka, đumbir, kurkuma, so, biber, bundeva semena za dekoraciju",
+      "description": "Kremasta i mirisna supa od bundeve sa kokosovim mlekom i đumbirom. Topla i ugodna za jesenje i zimske večeri.",
+      "ratings": [
+        {
+          "username": "stefan_chef",
+          "rating": 5,
+          "comment": "Neverovatna boja i ukus, prava jesen u tanjiru!",
+          "dateRated": "2024-08-24T19:00:00.000Z"
+        }
+      ],
+      "averageRating": 5.0,
+      "totalRatings": 1
+    },
+    {
+      "id": 15,
+      "name": "Domaći hamburger",
+      "creator": "djordje_kuvac",
+      "taste": "slano",
+      "meat": "govedina",
+      "occasion": "vecera",
+      "cookingMethod": "grilovano",
+      "timeToMake": 35,
+      "ingredientWeight": 0.8,
+      "ingredients": "600g mlevene junetine, 4 hamburger zemičke, 4 lista salate, 2 paradajza, 1 crveni luk, 4 lista čedara, ketchup, senf, majonez, so, biber, beli luk u prahu",
+      "description": "Sočan domaći hamburger sa ručno oblikovanim pljeskavicama od junetine i svežim dodacima. Bolji od svakog fast fooda.",
+      "ratings": [
+        {
+          "username": "marko123",
+          "rating": 5,
+          "comment": "Ovo je to! Nikad više neću u McDonald's.",
+          "dateRated": "2024-08-25T20:30:00.000Z"
+        },
+        {
+          "username": "nikola.m",
+          "rating": 5,
+          "comment": "Savršen hamburger, sočan i ukusan!",
+          "dateRated": "2024-08-26T19:45:00.000Z"
+        }
+      ],
+      "averageRating": 5.0,
+      "totalRatings": 2
     }
   ]
 }
