@@ -2,7 +2,7 @@ services:
   # MongoDB servis
   mongodb:
     image: mongo:4.4
-    container_name: cloud-recepti-mongodb
+    container_name: steh-recepti-mongodb
     restart: unless-stopped
     env_file:
       - .env
@@ -15,14 +15,14 @@ services:
     ports:
       - "${MONGO_PORT}:27017"
     networks:
-      - cloud-recepti-network
+      - steh-recepti-network
 
   # Backend servis - Node.js/Express API
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: cloud-recepti-backend
+    container_name: steh-recepti-backend
     restart: unless-stopped
     depends_on:
       - mongodb
@@ -38,14 +38,14 @@ services:
     volumes:
       - ./backend/src:/usr/src/app/src  # bind-mount za source kod u developmentu
     networks:
-      - cloud-recepti-network
+      - steh-recepti-network
 
   # Frontend servis - Angular aplikacija
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: cloud-recepti-frontend
+    container_name: steh-recepti-frontend
     restart: unless-stopped
     depends_on:
       - backend
@@ -56,15 +56,15 @@ services:
     ports:
       - "${FRONTEND_PORT}:${FRONTEND_PORT}"
     networks:
-      - cloud-recepti-network
+      - steh-recepti-network
 
 # Mreže
 networks:
-  cloud-recepti-network:
+  steh-recepti-network:
     driver: bridge
-    name: cloud-recepti-network
+    name: steh-recepti-network
 
 # Volumi
 volumes:
   mongodb_data:
-    name: cloud-recepti-mongodb-data
+    name: steh-recepti-mongodb-data
