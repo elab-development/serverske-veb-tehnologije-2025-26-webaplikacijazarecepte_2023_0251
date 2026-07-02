@@ -10,9 +10,35 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    volumes:
+      - mongodb_data:/data/db
     ports:
       - "${MONGO_PORT}:27017"
+    networks:
+      - cloud-recepti-network
 
+  # Backend servis - Node.js/Express API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cloud-recepti-backend
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+    env_file:
+      - .env
+    environment:
+      PORT: ${BACKEND_PORT}
+      MONGODB_URI: ${MONGODB_URI}
+      CORS_ORIGIN: ${CORS_ORIGIN}
+      JWT_SECRET: ${JWT_SECRET}
+    ports:
+      - "${BACKEND_EXTERNAL_PORT}:${BACKEND_PORT}"
+    volumes:
+      - ./backend/src:/usr/src/app/src  # bind-mount za source kod u developmentu
+    networks:
+      - cloud-recepti-network
 
   # Frontend servis - Angular aplikacija
   frontend:
@@ -29,5 +55,16 @@ services:
       - API_URL=${API_URL}
     ports:
       - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+    networks:
+      - cloud-recepti-network
 
+# Mreže
+networks:
+  cloud-recepti-network:
+    driver: bridge
+    name: cloud-recepti-network
 
+# Volumi
+volumes:
+  mongodb_data:
+    name: cloud-recepti-mongodb-data
