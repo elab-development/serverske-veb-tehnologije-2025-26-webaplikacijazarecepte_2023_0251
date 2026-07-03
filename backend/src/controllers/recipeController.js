@@ -1,9 +1,10 @@
 const Recipe = require('../models/Recipe');
+const Rating = require('../models/Rating');
 
-// GET /api/recipes
+// GET /api/recipes - populate ratings from Rating collection
 const getAll = async (req, res) => {
   try {
-    const recipes = await Recipe.find();
+    const recipes = await Recipe.find().populate('ratings');
     res.json(recipes);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -35,7 +36,7 @@ const search = async (req, res) => {
     const skip = (pageNum - 1) * limitNum;
 
     const [recipes, total] = await Promise.all([
-      Recipe.find(filter).skip(skip).limit(limitNum),
+      Recipe.find(filter).skip(skip).limit(limitNum).populate('ratings'),
       Recipe.countDocuments(filter)
     ]);
 
@@ -66,7 +67,7 @@ const exportCSV = async (req, res) => {
     const csv = header + rows;
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
     res.setHeader('Content-Disposition', 'attachment; filename=recipes.csv');
-    res.send('\uFEFF' + csv); // BOM za Excel podršku
+    res.send('\uFEFF' + csv);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -75,9 +76,9 @@ const exportCSV = async (req, res) => {
 // GET /api/recipes/:id
 const getById = async (req, res) => {
   try {
-    const recipe = await Recipe.findOne({ id: req.params.id });
+    const recipe = await Recipe.findOne({ id: req.params.id }).populate('ratings');
     if (!recipe) {
-      return res.status(404).json({ message: 'Recept nije pronađen' });
+      return res.status(404).json({ message: 'Recept nije pronadjen' });
     }
     res.json(recipe);
   } catch (err) {
@@ -115,7 +116,7 @@ const update = async (req, res) => {
       { new: true }
     );
     if (!recipe) {
-      return res.status(404).json({ message: 'Recept nije pronađen' });
+      return res.status(404).json({ message: 'Recept nije pronadjen' });
     }
     res.json(recipe);
   } catch (err) {
@@ -128,43 +129,166 @@ const remove = async (req, res) => {
   try {
     const recipe = await Recipe.findOneAndDelete({ id: req.params.id });
     if (!recipe) {
-      return res.status(404).json({ message: 'Recept nije pronađen' });
+      return res.status(404).json({ message: 'Recept nije pronadjen' });
     }
-    res.json({ message: 'Recept je uspešno obrisan' });
+    // Also delete associated ratings
+    await Rating.deleteMany({ recipeId: recipe._id });
+    res.json({ message: 'Recept je uspesno obrisan' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-// POST /api/recipes/:id/rate
+// POST /api/recipes/:id/rate - now creates Rating documents
 const rate = async (req, res) => {
   try {
     const { username, rating, comment } = req.body;
     const recipe = await Recipe.findOne({ id: parseInt(req.params.id) });
 
     if (!recipe) {
-      return res.status(404).json({ message: 'Recept nije pronađen' });
+      return res.status(404).json({ message: 'Recept nije pronadjen' });
     }
 
-    const existingRatingIndex = recipe.ratings.findIndex(r => r.username === username);
+    // Check for existing rating from this user
+    const existingRating = await Rating.findOne({
+      recipeId: recipe._id,
+      username,
+    });
 
-    if (existingRatingIndex !== -1) {
-      recipe.ratings[existingRatingIndex].rating = rating;
-      recipe.ratings[existingRatingIndex].comment = comment;
-      recipe.ratings[existingRatingIndex].dateRated = new Date();
+    if (existingRating) {
+      existingRating.rating = rating;
+      existingRating.comment = comment;
+      existingRating.dateRated = new Date();
+      await existingRating.save();
     } else {
-      recipe.ratings.push({ username, rating, comment, dateRated: new Date() });
+      const newRating = new Rating({
+        recipeId: recipe._id,
+        username,
+        rating,
+        comment,
+        dateRated: new Date(),
+      });
+      await newRating.save();
+      recipe.ratings.push(newRating._id);
     }
 
-    const totalRating = recipe.ratings.reduce((sum, item) => sum + item.rating, 0);
-    recipe.totalRatings = recipe.ratings.length;
+    // Recalculate denormalized fields
+    const allRatings = await Rating.find({ recipeId: recipe._id });
+    const totalRating = allRatings.reduce((sum, r) => sum + r.rating, 0);
+    recipe.totalRatings = allRatings.length;
     recipe.averageRating = recipe.totalRatings > 0 ? totalRating / recipe.totalRatings : 0;
-
     await recipe.save();
-    res.json(recipe);
+
+    const populated = await Recipe.findOne({ id: parseInt(req.params.id) }).populate('ratings');
+    res.json(populated);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 };
 
-module.exports = { getAll, search, exportCSV, getById, create, update, remove, rate };
+// GET /api/recipes/stats
+const getStats = async (req, res) => {
+  try {
+    const stats = await Recipe.aggregate([
+      {
+        $facet: {
+          byTaste: [
+            {
+              $group: {
+                _id: '$taste',
+                count: { $sum: 1 },
+                avgRating: { $avg: '$averageRating' },
+                avgTime: { $avg: '$timeToMake' },
+                totalRatings: { $sum: '$totalRatings' },
+              },
+            },
+            { $sort: { count: -1 } },
+          ],
+          byOccasion: [
+            {
+              $group: {
+                _id: '$occasion',
+                count: { $sum: 1 },
+                avgRating: { $avg: '$averageRating' },
+                avgTime: { $avg: '$timeToMake' },
+              },
+            },
+            { $sort: { count: -1 } },
+          ],
+          byMethod: [
+            {
+              $group: {
+                _id: '$cookingMethod',
+                count: { $sum: 1 },
+                avgRating: { $avg: '$averageRating' },
+                avgTime: { $avg: '$timeToMake' },
+              },
+            },
+            { $sort: { count: -1 } },
+          ],
+          summary: [
+            {
+              $group: {
+                _id: null,
+                totalRecipes: { $sum: 1 },
+                avgOverallRating: { $avg: '$averageRating' },
+                avgOverallTime: { $avg: '$timeToMake' },
+                totalRatingsCount: { $sum: '$totalRatings' },
+              },
+            },
+          ],
+        },
+      },
+    ]);
+
+    const result = stats[0];
+    res.json({
+      summary: result.summary[0] || {
+        totalRecipes: 0,
+        avgOverallRating: 0,
+        avgOverallTime: 0,
+        totalRatingsCount: 0,
+      },
+      byTaste: result.byTaste,
+      byOccasion: result.byOccasion,
+      byMethod: result.byMethod,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// GET /api/recipes/ratings-report - $lookup demo joining Recipe -> Rating
+const ratingsReport = async (req, res) => {
+  try {
+    const report = await Recipe.aggregate([
+      {
+        $lookup: {
+          from: 'ratings',
+          localField: '_id',
+          foreignField: 'recipeId',
+          as: 'ratingDetails',
+        },
+      },
+      { $unwind: { path: '$ratingDetails', preserveNullAndEmptyArrays: true } },
+      {
+        $group: {
+          _id: '$_id',
+          name: { $first: '$name' },
+          creator: { $first: '$creator' },
+          totalRatings: { $first: '$totalRatings' },
+          averageRating: { $first: '$averageRating' },
+          latestRating: { $max: '$ratingDetails.dateRated' },
+          ratingCount: { $sum: { $cond: [{ $ifNull: ['$ratingDetails._id', false] }, 1, 0] } },
+        },
+      },
+      { $sort: { averageRating: -1 } },
+    ]);
+
+    res.json(report);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = { getAll, search, exportCSV, getById, getStats, ratingsReport, create, update, remove, rate };

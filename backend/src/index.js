@@ -14,6 +14,7 @@ const userRoutes = require('./routes/users');
 const publicRoutes = require('./routes/public');
 const Recipe = require('./models/Recipe');
 const User = require('./models/User');
+const Rating = require('./models/Rating');
 
 const app = express();
 
@@ -63,8 +64,35 @@ async function initializeDatabase() {
         }))
       );
 
-      await User.insertMany(usersWithHashedPasswords);
+            await User.insertMany(usersWithHashedPasswords);
       await Recipe.insertMany(seedData.recipes);
+
+      // M14: Seed ratings as separate collection and link to recipes
+      if (seedData.ratings && seedData.ratings.length > 0) {
+        for (const ratingData of seedData.ratings) {
+          const recipe = await Recipe.findOne({ id: ratingData.recipeId });
+          if (recipe) {
+            const rating = new Rating({
+              recipeId: recipe._id,
+              username: ratingData.username,
+              rating: ratingData.rating,
+              comment: ratingData.comment,
+              dateRated: new Date(ratingData.dateRated),
+            });
+            await rating.save();
+            recipe.ratings.push(rating._id);
+          }
+        }
+        // Update denormalized counts
+        for (const recipe of await Recipe.find()) {
+          const ratings = await Rating.find({ recipeId: recipe._id });
+          recipe.totalRatings = ratings.length;
+          recipe.averageRating = ratings.length > 0
+            ? ratings.reduce((s, r) => s + r.rating, 0) / ratings.length
+            : 0;
+          await recipe.save();
+        }
+      }
 
       console.log(`Seeded ${seedData.users.length} users and ${seedData.recipes.length} recipes`);
     } else {

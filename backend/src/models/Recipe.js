@@ -1,26 +1,5 @@
 const mongoose = require('mongoose');
 
-const ratingSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true
-  },
-  rating: {
-    type: Number,
-    required: true,
-    min: 1,
-    max: 5
-  },
-  comment: {
-    type: String,
-    maxlength: 500
-  },
-  dateRated: {
-    type: Date,
-    default: Date.now
-  }
-});
-
 const recipeSchema = new mongoose.Schema({
   id: {
     type: Number,
@@ -43,7 +22,7 @@ const recipeSchema = new mongoose.Schema({
   },
   meat: {
     type: String,
-    enum: ['', 'piletina', 'curetina', 'svinjetina', 'govedina', 'jagnjetina', 'teletina', 'riba', 'morski-plodovi', 'mešano']
+    enum: ['', 'piletina', 'curetina', 'svinjetina', 'govedina', 'jagnjetina', 'teletina', 'riba', 'morski-plodovi', 'mesano']
   },
   occasion: {
     type: String,
@@ -77,7 +56,10 @@ const recipeSchema = new mongoose.Schema({
     required: true,
     maxlength: 1000
   },
-  ratings: [ratingSchema],
+  ratings: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Rating',
+  }],
   averageRating: {
     type: Number,
     default: 0,
