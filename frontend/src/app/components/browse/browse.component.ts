@@ -175,6 +175,16 @@ export class BrowseComponent implements OnInit {
     this.applyFilters();
   }
 
+    exportCSV(): void {
+    const apiUrl = 'http://localhost:3001/api/recipes/export';
+    const link = document.createElement('a');
+    link.href = apiUrl;
+    link.download = 'recipes.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   clearAllFilters(): void {
     this.filters = {
       searchTerm: '',
