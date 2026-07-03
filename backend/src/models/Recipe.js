@@ -43,7 +43,7 @@ const recipeSchema = new mongoose.Schema({
   },
   meat: {
     type: String,
-    enum: ['', 'piletina', 'curetina', 'svinjetina', 'govedina', 'jagnjetina', 'teletina', 'riba', 'morski-plodovi']
+    enum: ['', 'piletina', 'curetina', 'svinjetina', 'govedina', 'jagnjetina', 'teletina', 'riba', 'morski-plodovi', 'mešano']
   },
   occasion: {
     type: String,
@@ -53,7 +53,7 @@ const recipeSchema = new mongoose.Schema({
   cookingMethod: {
     type: String,
     required: true,
-    enum: ['przeno', 'peceno', 'kuvano', 'grilovano', 'dimljeno', 'dinstano', 'marinado', 'bareno']
+    enum: ['przeno', 'peceno', 'kuvano', 'grilovano', 'dimljeno', 'dinstano', 'marinado', 'bareno', 'sirovo']
   },
   timeToMake: {
     type: Number,

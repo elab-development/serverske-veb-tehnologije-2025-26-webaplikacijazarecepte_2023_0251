@@ -53,12 +53,17 @@ async function initializeDatabase() {
     if (userCount === 0) {
       console.log('Seeding database...');
 
-      for (const user of seedData.users) {
-        user.role = user.username === 'marko123' ? 'admin' : 'user';
-        user.password = await bcrypt.hash(user.password, 10);
-      }
+      // M20: Use explicit role from seed.json instead of hard-coded check
+      // M22: Hash all passwords concurrently with Promise.all
+      const usersWithHashedPasswords = await Promise.all(
+        seedData.users.map(async (user) => ({
+          ...user,
+          role: user.role || 'user',
+          password: await bcrypt.hash(user.password, 10),
+        }))
+      );
 
-      await User.insertMany(seedData.users);
+      await User.insertMany(usersWithHashedPasswords);
       await Recipe.insertMany(seedData.recipes);
 
       console.log(`Seeded ${seedData.users.length} users and ${seedData.recipes.length} recipes`);
@@ -66,7 +71,8 @@ async function initializeDatabase() {
       console.log(`Database already has ${userCount} users, skipping seed.`);
     }
   } catch (err) {
-    console.error('Seed error:', err.message);
+    // M21: Log full error object, not just .message
+    console.error('Seed error:', err);
   }
 }
 
