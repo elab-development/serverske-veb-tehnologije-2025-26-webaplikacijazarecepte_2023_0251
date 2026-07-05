@@ -8,6 +8,8 @@ const authorize = require('../middleware/authorize');
 router.get('/', recipeController.getAll);
 router.get('/search', recipeController.search);
 router.get('/export', recipeController.exportCSV);
+router.get('/ratings-report', recipeController.ratingsReport);
+router.get('/stats', recipeController.getStats);
 router.get('/:id', recipeController.getById);
 
 // Zaštićene rute (samo ulogovani korisnici)
