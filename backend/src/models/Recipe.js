@@ -22,7 +22,7 @@ const recipeSchema = new mongoose.Schema({
   },
   meat: {
     type: String,
-    enum: ['', 'piletina', 'curetina', 'svinjetina', 'govedina', 'jagnjetina', 'teletina', 'riba', 'morski-plodovi', 'mesano']
+    enum: ['', 'piletina', 'curetina', 'svinjetina', 'govedina', 'jagnjetina', 'teletina', 'riba', 'morski-plodovi', 'mešano']
   },
   occasion: {
     type: String,

@@ -1,7 +1,6 @@
-
 import { Injectable } from '@angular/core';
 import { LocalStorageService } from './local-storage.service';
-import { Observable, of, throwError, catchError, tap, map } from 'rxjs';
+import { Observable, of, throwError, catchError, tap, map, BehaviorSubject } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import { EnvConfigService } from './env-config.service';
@@ -12,6 +11,7 @@ export interface User {
     email: string;
     password?: string;
     liked: number[];
+    role?: string;
 }
 
 @Injectable({
@@ -20,6 +20,7 @@ export interface User {
 export class AuthService {
     private currentUser: User | null = null;
     private apiUrl: string;
+    public userSubject = new BehaviorSubject<User | null>(null);
 
     constructor(
         public localStorageService: LocalStorageService,
@@ -27,63 +28,72 @@ export class AuthService {
         private envConfig: EnvConfigService
     ) {
         this.apiUrl = this.envConfig.apiUrl;
-        this.loadCurrentUser();
     }
 
-    private loadCurrentUser(): void {
-        const userData = this.localStorageService.get<User>('currentUser');
-        if (userData) {
-            if (!userData.liked) {
-                userData.liked = [];
-            }
-            this.currentUser = userData;
-        }
+    // M15: Check HTTP-only cookie session via backend /me endpoint
+    checkSession(): void {
+        this.http.get<User>(`${this.apiUrl}/auth/me`, { withCredentials: true }).subscribe({
+            next: (user) => {
+                this.currentUser = user;
+                this.userSubject.next(user);
+            },
+            error: () => {
+                this.currentUser = null;
+                this.userSubject.next(null);
+            },
+        });
     }
 
-        getCurrentUser(): User | null {
+    getCurrentUser(): User | null {
         return this.currentUser;
     }
 
     getToken(): string | null {
-        // Cookie-based auth: token stored in HTTP-only cookie by the backend.
-        // This method exists for compatibility with AuthInterceptor.
         return null;
     }
 
     logout(): void {
-        this.localStorageService.remove('currentUser');
+        this.http.post(`${this.apiUrl}/auth/logout`, {}, { withCredentials: true }).subscribe(() => {
+        });
         this.currentUser = null;
+        this.userSubject.next(null);
     }
 
-        login(email: string, password: string): Observable<{message: string, user: User}> {
-        return this.http.post<{message: string, user: User}>(`${this.apiUrl}/auth/login`, { username: email, password }).pipe(
-            tap((response: {message: string, user: User}) => {
+    login(email: string, password: string): Observable<{message: string, user: User}> {
+        return this.http.post<{message: string, user: User}>(
+            `${this.apiUrl}/auth/login`,
+            { username: email, password },
+            { withCredentials: true }
+        ).pipe(
+            tap((response) => {
                 if (response.user) {
                     if (!response.user.liked) {
                         response.user.liked = [];
                     }
-                    
                     this.currentUser = response.user;
-                    this.localStorageService.set('currentUser', response.user);
+                    this.userSubject.next(response.user);
                 }
             }),
             catchError((error: HttpErrorResponse) => {
                 console.error('Login error:', error);
-                
                 return this.loginFromLocalJSON(email, password);
             })
-                );
+        );
     }
 
     register(username: string, email: string, password: string): Observable<{message: string, user: User}> {
-        return this.http.post<{message: string, user: User}>(`${this.apiUrl}/auth/register`, { username, email, password }).pipe(
-            tap((response: {message: string, user: User}) => {
+        return this.http.post<{message: string, user: User}>(
+            `${this.apiUrl}/auth/register`,
+            { username, email, password },
+            { withCredentials: true }
+        ).pipe(
+            tap((response) => {
                 if (response.user) {
                     if (!response.user.liked) {
                         response.user.liked = [];
                     }
                     this.currentUser = response.user;
-                    this.localStorageService.set('currentUser', response.user);
+                    this.userSubject.next(response.user);
                 }
             }),
             catchError((error: HttpErrorResponse) => {
@@ -100,18 +110,13 @@ export class AuthService {
                     const user = data.users.find((u: User) => 
                         (u.username === email || u.email === email) && u.password === password
                     );
-                    
                     if (user) {
                         if (!user.liked) {
                             user.liked = [];
                         }
-                        
                         this.currentUser = user;
-                        this.localStorageService.set('currentUser', user);
-                        observer.next({
-                            message: 'Uspesna prijava (lokalno)',
-                            user: user
-                        });
+                        this.userSubject.next(user);
+                        observer.next({ message: 'Uspesna prijava (lokalno)', user: user });
                         observer.complete();
                     } else {
                         observer.error('Invalid username or password');
@@ -129,7 +134,7 @@ export class AuthService {
             user.liked = [];
         }
         this.currentUser = user;
-        this.localStorageService.set('currentUser', user);
+        this.userSubject.next(user);
     }
     
     getUsers(): Observable<User[]> {
@@ -141,7 +146,7 @@ export class AuthService {
         );
     }
     
-    private getUsersFromLocalJSON(): Observable<User[]> {
+        private getUsersFromLocalJSON(): Observable<User[]> {
         return this.http.get<{users: User[]}>('/assets/data.json').pipe(
             tap((data: {users: User[]}) => console.log('Using local JSON data for users as fallback')),
             catchError((error: HttpErrorResponse) => {
@@ -160,15 +165,20 @@ export class AuthService {
             })
         );
     }
+
+    // M19: Check if current user is admin
+    isAdmin(): boolean {
+        return this.currentUser?.role === 'admin';
+    }
     
     private getUserFromLocalJSON(username: string): Observable<User> {
         return this.http.get<{users: User[]}>('/assets/data.json').pipe(
-            tap((data: {users: User[]}) => console.log('Using local JSON data for user as fallback')),
+            tap((data) => console.log('Using local JSON data for user as fallback')),
             catchError((error: HttpErrorResponse) => {
                 console.error('Error loading local JSON data:', error);
                 return of({ users: [] });
             }),
-            map((data: {users: User[]}) => {
+            map((data) => {
                 const user = data.users.find((u: User) => u.username === username);
                 if (!user) {
                     throw new Error('User not found');

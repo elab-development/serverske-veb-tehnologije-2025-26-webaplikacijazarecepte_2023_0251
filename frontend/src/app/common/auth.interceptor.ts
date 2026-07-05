@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import {
     HttpInterceptor,
     HttpRequest,
@@ -13,13 +13,13 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-    constructor(private authService: AuthService, private router: Router) {}
+    constructor(private injector: Injector) {}
 
     intercept(
         req: HttpRequest<any>,
         next: HttpHandler
     ): Observable<HttpEvent<any>> {
-        const token = this.authService.getToken();
+        const token = this.injector.get(AuthService).getToken();
 
         let authReq = req;
         if (token) {
@@ -33,8 +33,8 @@ export class AuthInterceptor implements HttpInterceptor {
         return next.handle(authReq).pipe(
             catchError((error: HttpErrorResponse) => {
                 if (error.status === 401) {
-                    this.authService.logout();
-                    this.router.navigate(['/login']);
+                    this.injector.get(AuthService).logout();
+                    this.injector.get(Router).navigate(['/login']);
                 }
 
                 return throwError(() => error);
