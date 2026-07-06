@@ -9,7 +9,7 @@ import { AuthService } from './common/auth.service';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
-  title = 'kteh-recepti';
+  title = 'steh-recepti';
 
   constructor(private authService: AuthService) {}
 
