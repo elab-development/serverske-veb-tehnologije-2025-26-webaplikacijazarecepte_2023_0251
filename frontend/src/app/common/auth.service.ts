@@ -30,18 +30,19 @@ export class AuthService {
         this.apiUrl = this.envConfig.apiUrl;
     }
 
-    // M15: Check HTTP-only cookie session via backend /me endpoint
-    checkSession(): void {
-        this.http.get<User>(`${this.apiUrl}/auth/me`, { withCredentials: true }).subscribe({
-            next: (user) => {
+        // M15: Check HTTP-only cookie session via backend /me endpoint
+    checkSession(): Observable<User> {
+        return this.http.get<User>(`${this.apiUrl}/auth/me`, { withCredentials: true }).pipe(
+            tap((user) => {
                 this.currentUser = user;
                 this.userSubject.next(user);
-            },
-            error: () => {
+            }),
+            catchError((error: HttpErrorResponse) => {
                 this.currentUser = null;
                 this.userSubject.next(null);
-            },
-        });
+                throw error;
+            })
+        );
     }
 
     getCurrentUser(): User | null {
