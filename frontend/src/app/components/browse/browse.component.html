@@ -1,12 +1,13 @@
 <div class="flex w-full h-full pt-20">
-  <app-sidebar 
+    <app-sidebar 
     [items]="sidebarItems"
     [isOpen]="isSidebarOpen"
     title="Menu"
     (itemClick)="onSidebarItemClick($event)"
     (toggleSidebar)="onSidebarToggle($event)"
     (filterChange)="onFilterChange($event)"
-    (searchChange)="onSearchChange($event)">
+    (searchChange)="onSearchChange($event)"
+    (exportCSV)="exportCSV()">
   </app-sidebar>
 
   <div 

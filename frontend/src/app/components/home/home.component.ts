@@ -8,7 +8,7 @@ import { RecipeService } from '../../common/recipe.service';
 import { Recipe } from '../../common/card/card.component';
 import { EnvConfigService } from '../../common/env-config.service';
 
-interface NewsArticle {
+interface MealArticle {
   title: string;
   description: string;
   url: string;
@@ -16,9 +16,9 @@ interface NewsArticle {
   category: string;
 }
 
-interface NewsResponse {
+interface MealResponse {
   source: string;
-  articles: NewsArticle[];
+  articles: MealArticle[];
 }
 
 @Component({
@@ -29,9 +29,9 @@ interface NewsResponse {
 })
 export class HomeComponent implements OnInit {
   recipeOfMonth: Recipe | null = null;
-  newsArticles: NewsArticle[] = [];
-  newsSource: string = '';
-  loadingNews: boolean = false;
+  mealArticles: MealArticle[] = [];
+  mealSource: string = '';
+  loadingMeals: boolean = false;
 
   constructor(
     private router: Router,
@@ -42,7 +42,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadRecipeOfMonth();
-    this.loadNews();
+    this.loadMeals();
   }
 
   private loadRecipeOfMonth(): void {
@@ -59,48 +59,48 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  private loadNews(): void {
-    this.loadingNews = true;
+  private loadMeals(): void {
+    this.loadingMeals = true;
     const apiUrl = this.envConfig.apiUrl;
     this.http
-      .get<NewsResponse>(`${apiUrl}/news`)
+      .get<MealResponse>(`${apiUrl}/meal-search?q=chicken`)
       .pipe(
         catchError(() => {
           return of({
             source: 'Demo vesti (offline)',
             articles: [
               {
-                title: 'Novi trendovi u srpskoj kuhinji',
+                title: 'Chicken Handi',
                 description:
                   'Mladi kuvari donose svez pristup tradicionalnim receptima.',
                 url: '#',
                 publishedAt: new Date().toISOString(),
-                category: 'Recepti',
+                category: 'Meal',
               },
               {
-                title: 'Sezonsko voce i povrce - sta kupiti u junu',
+                title: 'Beef Stroganoff',
                 description:
                   'Vodic kroz najbolje sezonske namirnice za jun 2026.',
                 url: '#',
                 publishedAt: new Date().toISOString(),
-                category: 'Ishrana',
+                category: 'Meal',
               },
               {
-                title: 'Kako napraviti savrsen hleb kod kuce',
+                title: 'Chocolate Cake',
                 description:
                   'Saveti profesionalnih pekara za domaci hleb sa hrskavom koricom.',
                 url: '#',
                 publishedAt: new Date().toISOString(),
-                category: 'Kulinarstvo',
+                category: 'Meal',
               },
             ],
           });
         })
       )
       .subscribe((data) => {
-        this.newsSource = data.source;
-        this.newsArticles = data.articles || [];
-        this.loadingNews = false;
+        this.mealSource = data.source;
+        this.mealArticles = data.articles || [];
+        this.loadingMeals = false;
       });
   }
 

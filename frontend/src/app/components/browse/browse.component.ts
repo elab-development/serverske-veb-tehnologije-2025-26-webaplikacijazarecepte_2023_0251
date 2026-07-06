@@ -175,14 +175,23 @@ export class BrowseComponent implements OnInit {
     this.applyFilters();
   }
 
-    exportCSV(): void {
-    const apiUrl = 'http://localhost:3001/api/recipes/export';
-    const link = document.createElement('a');
-    link.href = apiUrl;
-    link.download = 'recipes.csv';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+      exportCSV(): void {
+    this.recipeService.downloadCsv().subscribe({
+      next: (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'recipes.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Failed to download CSV:', err);
+        alert('Gre\u0161ka pri preuzimanju CSV fajla.');
+      }
+    });
   }
 
   clearAllFilters(): void {

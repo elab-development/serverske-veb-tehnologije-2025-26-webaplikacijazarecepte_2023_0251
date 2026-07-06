@@ -1,81 +1,82 @@
 const https = require('https');
 
-// GET /api/news - javni servis integracija (NewsAPI)
-const getNews = async (req, res) => {
-  try {
-    const apiKey = process.env.NEWS_API_KEY || 'demo';
-    const url = `https://newsapi.org/v2/everything?q=hrana%20OR%20recepti%20OR%20kuvanje&language=sr&sortBy=publishedAt&pageSize=5&apiKey=${apiKey}`;
+// GET /api/meal-search - TheMealDB search (no API key)
+const getMealSearch = (req, res) => {
+  const query = req.query.q || 'chicken';
+  const url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent(query)}`;
 
-    https.get(url, (response) => {
-      let data = '';
+  https.get(url, (response) => {
+    let data = '';
 
-      response.on('data', (chunk) => {
-        data += chunk;
-      });
-
-      response.on('end', () => {
-        try {
-          const parsed = JSON.parse(data);
-
-          if (parsed.status === 'error') {
-            return res.json({
-              source: 'Demo vesti (NewsAPI nedostupan)',
-              articles: [
-                {
-                  title: 'Novi trendovi u srpskoj kuhinji',
-                  description: 'Mladi kuvari donose svez pristup tradicionalnim receptima.',
-                  url: 'https://example.com/vesti/1',
-                  publishedAt: new Date().toISOString()
-                },
-                {
-                  title: 'Sezonsko voce i povrce - sta kupiti u junu',
-                  description: 'Vodic kroz najbolje sezonske namirnice za jun 2026.',
-                  url: 'https://example.com/vesti/2',
-                  publishedAt: new Date().toISOString()
-                },
-                {
-                  title: 'Kako napraviti savrsen hleb kod kuce',
-                  description: 'Saveti profesionalnih pekara za domaci hleb sa hrskavom koricom.',
-                  url: 'https://example.com/vesti/3',
-                  publishedAt: new Date().toISOString()
-                }
-              ]
-            });
-          }
-
-          const processed = {
-            source: 'NewsAPI - Kulinarske vesti',
-            articles: (parsed.articles || []).map(article => ({
-              title: article.title,
-              description: article.description,
-              url: article.url,
-              publishedAt: article.publishedAt,
-              category: article.title?.toLowerCase().includes('recept') ? 'Recepti' :
-                        article.title?.toLowerCase().includes('hrana') ? 'Ishrana' : 'Kulinarstvo'
-            }))
-          };
-
-          res.json(processed);
-        } catch (parseErr) {
-          res.status(500).json({ message: 'Greska pri obradi podataka javnog servisa.' });
-        }
-      });
-    }).on('error', (err) => {
-      res.json({
-        source: 'Demo vesti (offline fallback)',
-        articles: [
-          { title: 'Novi trendovi u srpskoj kuhinji', description: 'Mladi kuvari donose svez pristup tradicionalnim receptima.', url: 'https://example.com/vesti/1', publishedAt: new Date().toISOString(), category: 'Recepti' },
-          { title: 'Sezonsko voce i povrce - sta kupiti u junu', description: 'Vodic kroz najbolje sezonske namirnice za jun 2026.', url: 'https://example.com/vesti/2', publishedAt: new Date().toISOString(), category: 'Ishrana' },
-          { title: 'Kako napraviti savrsen hleb kod kuce', description: 'Saveti profesionalnih pekara za domaci hleb sa hrskavom koricom.', url: 'https://example.com/vesti/3', publishedAt: new Date().toISOString(), category: 'Kulinarstvo' }
-        ]
-      });
+    response.on('data', (chunk) => {
+      data += chunk;
     });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+
+    response.on('end', () => {
+      try {
+        const parsed = JSON.parse(data);
+        const meals = parsed.meals || [];
+
+        if (meals.length === 0) {
+          return res.json({
+            source: 'Demo recepti (TheMealDB - nema rezultata)',
+            articles: [
+              {
+                title: 'Sopska salata',
+                description: 'Tradicionalna srpska salata od svezeg povrca i sira.',
+                url: 'https://www.themealdb.com/meal/52772',
+                publishedAt: new Date().toISOString(),
+                image: ''
+              },
+              {
+                title: 'Cevapi',
+                description: 'Mala valjkasta jela od mlevenog mesa sa lukom.',
+                url: 'https://www.themealdb.com/meal/52772',
+                publishedAt: new Date().toISOString(),
+                image: ''
+              },
+              {
+                title: 'Palacinke',
+                description: 'Tanke palacinke punjene dzemom ili cokoladom.',
+                url: 'https://www.themealdb.com/meal/52772',
+                publishedAt: new Date().toISOString(),
+                image: ''
+              }
+            ]
+          });
+        }
+
+        const articles = meals
+          .slice(0, 6)
+          .map(m => ({
+            title: m.strMeal,
+            description: `${m.strCategory} - ${m.strArea} cuisine`,
+            url: m.strSource || m.strYoutube || `https://www.themealdb.com/meal/${m.idMeal}`,
+            publishedAt: new Date().toISOString(),
+            image: m.strMealThumb || ''
+          }));
+
+        res.json({
+          source: `TheMealDB - Rezultati za "${query}"`,
+          articles
+        });
+      } catch (parseErr) {
+        res.status(500).json({ message: 'Greska pri obradi podataka TheMealDB servisa.' });
+      }
+    });
+  }).on('error', (err) => {
+    res.json({
+      source: 'Demo recepti (offline fallback)',
+      articles: [
+        { title: 'Sopska salata', description: 'Tradicionalna srpska salata od svezeg povrca i sira.', url: 'https://www.themealdb.com/meal/52772', publishedAt: new Date().toISOString(), image: '' },
+        { title: 'Cevapi', description: 'Mala valjkasta jela od mlevenog mesa sa lukom.', url: 'https://www.themealdb.com/meal/52772', publishedAt: new Date().toISOString(), image: '' },
+        { title: 'Palacinke', description: 'Tanke palacinke punjene dzemom ili cokoladom.', url: 'https://www.themealdb.com/meal/52772', publishedAt: new Date().toISOString(), image: '' }
+      ]
+    });
+  });
 };
 
-// GET /api/random-meal - drugi javni servis (TheMealDB)
+// GET /api/random-meal - TheMealDB random (no API key)
 const getRandomMeal = (req, res) => {
   const url = 'https://www.themealdb.com/api/json/v1/1/random.php';
 
@@ -138,4 +139,4 @@ const getRandomMeal = (req, res) => {
   });
 };
 
-module.exports = { getNews, getRandomMeal };
+module.exports = { getMealSearch, getRandomMeal };

@@ -28,7 +28,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   
   sidebarItems: SidebarItem[] = [
     { label: 'Profil', route: '/profile' },
-    { label: 'Pretraži', route: '/browse' },
+    //{ label: 'Pretraži', route: '/browse' },
+    { label: 'Pretra\u017ei', route: '/browse' },
     { label: 'Dodaj recept', route: '/profile' },
     { label: 'Odjavi se', route: '/login' }
   ];
@@ -126,13 +127,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.recipeService.addRecipe(recipeData, this.currentUser.username).subscribe({
       next: (newRecipe) => {
         console.log('Recipe added successfully:', newRecipe);
-        alert('Recept je uspešno sačuvan!');
+        //alert('Recept je uspešno sačuvan!');
+        alert('Recept je uspe\u0161no sa\u010duvan!');
         this.showRecipeForm = false;
         this.loadUserRecipes();
       },
       error: (error) => {
         console.error('Error adding recipe:', error);
-        alert('Greška pri čuvanju recepta. Pokušajte ponovo.');
+        //alert('Greška pri čuvanju recepta. Pokušajte ponovo.');
+        alert('Gre\u0161ka pri \u010duvanju recepta. Poku\u0161ajte ponovo.');
       }
     });
   }
@@ -164,5 +167,24 @@ export class ProfileComponent implements OnInit, OnDestroy {
   onSidebarToggle(isOpen: boolean): void {
     console.log('Sidebar toggled:', isOpen);
     this.isSidebarOpen = isOpen;
+  }
+
+  exportCSV(): void {
+    this.recipeService.downloadCsv().subscribe({
+      next: (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'recipes.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Failed to download CSV:', err);
+        alert('Gre\u0161ka pri preuzimanju CSV fajla.');
+      }
+    });
   }
 }

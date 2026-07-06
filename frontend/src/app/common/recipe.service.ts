@@ -115,10 +115,20 @@ export class RecipeService {
           this.recipesSubject.next([...this.allRecipes]);
         }
       }),
-      catchError((error: HttpErrorResponse) => {
+            catchError((error: HttpErrorResponse) => {
         console.error(`Error rating recipe ${recipeId}:`, error);
         return of() as Observable<Recipe>;
       })
     );
+  }
+
+    getExportCsvUrl(): string {
+    return `${this.apiUrl}/recipes/export`;
+  }
+
+  downloadCsv(): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/recipes/export`, {
+      responseType: 'blob'
+    });
   }
 }

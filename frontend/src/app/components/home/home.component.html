@@ -47,20 +47,20 @@
   </div>
 
   <!-- News panel -->
-  <div class="flex-1 bg-so2 flex flex-col items-center justify-center p-6 md:p-8">
-    <div class="text-center w-full max-w-md">
-      <h2 class="text-2xl md:text-3xl font-bold text-light mb-2">
+  <div class="flex-1 bg-so2 flex flex-col items-center justify-center p-6 md:p-8 overflow-hidden">
+    <div class="text-center w-full max-w-md h-full flex flex-col">
+      <h2 class="text-2xl md:text-3xl font-bold text-light mb-2 shrink-0">
         Recept log
       </h2>
-      <p class="text-sm text-light/60 mb-4">Kulinarske vesti i novosti</p>
+      <p class="text-sm text-light/60 mb-4 shrink-0">MealDB recepti i kuhinje sveta</p>
 
-      <div *ngIf="loadingNews" class="flex justify-center py-4">
+      <div *ngIf="loadingMeals" class="flex justify-center py-4">
         <span class="inline-block w-6 h-6 border-2 border-light border-t-transparent rounded-full animate-spin"></span>
       </div>
 
-      <ul class="space-y-3 text-left" *ngIf="!loadingNews && newsArticles.length > 0; else noNews">
+      <ul class="space-y-3 text-left overflow-y-auto flex-1 pr-2 scrollbar-thin scrollbar-thumb-light/30 scrollbar-track-transparent" *ngIf="!loadingMeals && mealArticles.length > 0; else noMeals">
         <li
-          *ngFor="let article of newsArticles"
+          *ngFor="let article of mealArticles"
           class="bg-light/10 rounded-lg p-3 hover:bg-light/20 transition-colors"
         >
           <a
@@ -91,11 +91,11 @@
         </li>
       </ul>
 
-      <ng-template #noNews>
-        <p class="text-light/60" *ngIf="!loadingNews">Nema dostupnih vesti.</p>
+      <ng-template #noMeals>
+        <p class="text-light/60" *ngIf="!loadingMeals">Nema dostupnih vesti.</p>
       </ng-template>
 
-      <p class="text-light/40 text-xs mt-4" *ngIf="newsSource">{{ newsSource }}</p>
+      <p class="text-light/40 text-xs mt-4" *ngIf="mealSource">{{ mealSource }}</p>
     </div>
   </div>
 </div>

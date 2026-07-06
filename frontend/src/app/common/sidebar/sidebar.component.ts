@@ -22,6 +22,7 @@ export class SidebarComponent {
   @Output() toggleSidebar = new EventEmitter<boolean>();
   @Output() filterChange = new EventEmitter<{value: string, filterNumber: number}>();
   @Output() searchChange = new EventEmitter<string>();
+  @Output() exportCSV = new EventEmitter<void>();
 
   onItemClick(item: SidebarItem): void {
     if (!item.disabled) {
@@ -44,5 +45,9 @@ export class SidebarComponent {
     const searchTerm = event.target.value;
     console.log('Search term changed to:', searchTerm);
     this.searchChange.emit(searchTerm);
+  }
+
+  onExportCSV(): void {
+    this.exportCSV.emit();
   }
 }

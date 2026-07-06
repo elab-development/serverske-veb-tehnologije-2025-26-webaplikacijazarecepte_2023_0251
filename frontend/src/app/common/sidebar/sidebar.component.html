@@ -113,5 +113,19 @@
         />
       </div>
     </div>
+
+    <!-- Export CSV button -->
+    <div class="mt-6 pt-4 border-t border-dark/20">
+      <button
+        class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-so2 text-light rounded-md hover:bg-so2/80 transition-colors text-sm font-medium"
+        (click)="onExportCSV()"
+        title="Preuzmi sve recepte kao CSV"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        Export CSV
+      </button>
+    </div>
   </div>
 </aside>
