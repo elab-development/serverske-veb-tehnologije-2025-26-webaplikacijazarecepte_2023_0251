@@ -3,7 +3,7 @@
     "version": 1,
     "newProjectRoot": "projects",
     "projects": {
-        "kteh-recepti": {
+        "steh-recepti": {
             "projectType": "application",
             "schematics": {
                 "@schematics/angular:component": {
@@ -17,7 +17,7 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:application",
                     "options": {
-                        "outputPath": "dist/kteh-recepti",
+                        "outputPath": "dist/steh-recepti",
                         "index": "src/index.html",
                         "browser": "src/main.ts",
                         "polyfills": ["zone.js"],
@@ -67,10 +67,10 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                            "buildTarget": "kteh-recepti:build:production"
+                            "buildTarget": "steh-recepti:build:production"
                         },
                         "development": {
-                            "buildTarget": "kteh-recepti:build:development"
+                            "buildTarget": "steh-recepti:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
