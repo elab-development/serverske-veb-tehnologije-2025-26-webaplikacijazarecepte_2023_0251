@@ -1,0 +1,51 @@
+.sidebar {
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  overflow-y: auto;
+  overflow-x: hidden;
+  
+  .sidebar-header {
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .sidebar-nav {
+    flex: 1;
+    
+    .sidebar-item {
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      min-height: 48px;
+      
+      &:hover:not(.opacity-50) {
+        transform: translateX(2px);
+      }
+      
+      .sidebar-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .sidebar-label {
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    
+    &.w-64 {
+      transform: translateX(0);
+    }
+  }
+}

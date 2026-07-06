@@ -1,0 +1,108 @@
+<div class="flex w-full h-full pt-20">
+  <app-sidebar 
+    [items]="sidebarItems"
+    [isOpen]="isSidebarOpen"
+    title="Menu"
+    (itemClick)="onSidebarItemClick($event)"
+    (toggleSidebar)="onSidebarToggle($event)"
+    (filterChange)="onFilterChange($event)"
+    (exportCSV)="exportCSV()">
+  </app-sidebar>
+
+  <div 
+    class="flex-1 flex flex-col items-start justify-center p-6 transition-all duration-300"
+    [ngClass]="{
+      'pl-6': !isSidebarOpen,
+      'pl-72': isSidebarOpen
+    }"
+  >   
+    <div class="mb-8">
+      <app-button 
+        variant="primary" 
+        (buttonClick)="toggleRecipeForm()"
+        class="px-6 py-2"
+      >
+        {{ showRecipeForm ? 'Sakrij formu' : 'Dodaj novi recept' }}
+      </app-button>
+    </div>
+
+    <div *ngIf="showRecipeForm" class="w-full max-w-2xl">
+      <app-form 
+        variant="recipe" 
+        (formSubmit)="onRecipeSubmit($event)"
+        submitButtonText="Sačuvaj recept"
+      ></app-form>
+    </div>
+
+    <div *ngIf="!showRecipeForm" class="w-full">
+      <div class="mb-6">
+        <div *ngIf="currentUser" class="text-so2/70 mb-4">
+          Dobrodošli, {{ currentUser.username }}!
+        </div>
+        
+        <div class="flex space-x-4 mb-4">
+          <button 
+            (click)="setActiveTab('my-recipes')"
+            class="px-6 py-2 rounded-lg font-medium transition-colors"
+            [ngClass]="{
+              'bg-so1 text-so2': activeTab === 'my-recipes',
+              'bg-so2/20 text-so2 hover:bg-so2/30': activeTab !== 'my-recipes'
+            }"
+          >
+            Moji recepti
+          </button>
+          <button 
+            (click)="setActiveTab('liked-recipes')"
+            class="px-6 py-2 rounded-lg font-medium transition-colors"
+            [ngClass]="{
+              'bg-so1 text-so2': activeTab === 'liked-recipes',
+              'bg-so2/20 text-so2 hover:bg-so2/30': activeTab !== 'liked-recipes'
+            }"
+          >
+            Omiljeni recepti ({{ (currentUser?.liked || []).length }})
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="activeTab === 'my-recipes'">
+        <h2 class="text-2xl font-bold text-dark mb-4">Moji recepti</h2>
+        
+        <div *ngIf="loading" class="text-center py-8">
+          <p class="text-so2/70">Učitavanje recepata...</p>
+        </div>
+
+        <div *ngIf="!loading && userRecipes.length === 0" class="text-center py-8">
+          <p class="text-so2/70 text-lg">Nemate kreirane recepte.</p>
+          <p class="text-so2/50 mt-2">Kliknite na "Dodaj novi recept" da kreirate svoj prvi recept!</p>
+        </div>
+
+        <div *ngIf="!loading && userRecipes.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <app-card 
+            *ngFor="let recipe of userRecipes" 
+            [recipe]="recipe">
+          </app-card>
+        </div>
+      </div>
+
+      <div *ngIf="activeTab === 'liked-recipes'">
+        <h2 class="text-2xl font-bold text-dark mb-4">Omiljeni recepti</h2>
+        
+        <div *ngIf="likedLoading" class="text-center py-8">
+          <p class="text-so2/70">Učitavanje omiljenih recepata...</p>
+        </div>
+
+        <div *ngIf="!likedLoading && likedRecipes.length === 0" class="text-center py-8">
+          <p class="text-so2/70 text-lg">Nemate omiljene recepte.</p>
+          <p class="text-so2/50 mt-2">Označite recepte kao omiljene da bi se ovde prikazali!</p>
+        </div>
+
+        <div *ngIf="!likedLoading && likedRecipes.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <app-card 
+            *ngFor="let recipe of likedRecipes" 
+            [recipe]="recipe">
+          </app-card>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

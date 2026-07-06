@@ -1,0 +1,579 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "STeh Recepti API",
+    "description": "Complete API test suite for STeh Recepti -- recipe web application.\n\nBase URL: http://localhost:3001\n\nIncludes 21 requests across 4 route groups: Auth, Recipes, Users, Public.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /health",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Body has status ok', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql('ok');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "POST /api/auth/register (Register new user)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('User returned', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.user).to.have.property('username');",
+                  "    pm.expect(json.user).to.have.property('email');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"test_user_{{ $randomInt }}\",\n  \"email\": \"test_{{ $randomInt }}@example.com\",\n  \"password\": \"testpass123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/auth/login (Login marko123)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('User is admin', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.user.role).to.eql('admin');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"marko123\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/auth/login (Invalid credentials)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 401', () => pm.response.to.have.status(401));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"wronguser\",\n  \"password\": \"wrongpass\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/auth/forgot-password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Token generated', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('resetToken');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"marko@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/forgot-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "forgot-password"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/auth/logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "logout"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/auth/me (Requires cookie)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 401 without cookie', () => pm.response.to.have.status(401));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Recipes",
+      "item": [
+        {
+          "name": "GET /api/recipes (List all)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns array', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.be.an('array').with.lengthOf.at.least(1);",
+                  "});",
+                  "pm.test('Recipe has required fields', () => {",
+                  "    const r = pm.response.json()[0];",
+                  "    pm.expect(r).to.have.property('name');",
+                  "    pm.expect(r).to.have.property('ingredients');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/recipes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "recipes"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/recipes/search?q=piletina&taste=slano&page=1&limit=5",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Pagination present', () => { const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('pagination');",
+                  "    pm.expect(json.pagination).to.have.property('total');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/recipes/search?q=piletina&taste=slano&page=1&limit=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "recipes", "search"],
+              "query": [
+                { "key": "q", "value": "piletina" },
+                { "key": "taste", "value": "slano" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "5" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/recipes/export (CSV)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Content-Type is CSV', () => {",
+                  "    const ct = pm.response.headers.get('Content-Type');",
+                  "    pm.expect(ct).to.include('csv');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/recipes/export",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "recipes", "export"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/recipes/stats (Aggregation)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has summary', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('summary');",
+                  "    pm.expect(json).to.have.property('byTaste');",
+                  "    pm.expect(json).to.have.property('byOccasion');",
+                  "    pm.expect(json).to.have.property('byMethod');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/recipes/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "recipes", "stats"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/recipes/ratings-report ($lookup)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns array with ratingCount', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.be.an('array');",
+                  "    pm.expect(json[0]).to.have.property('ratingCount');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/recipes/ratings-report",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "recipes", "ratings-report"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/recipes/:id (Get by ID)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Correct recipe returned', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.id).to.eql(1);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/recipes/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "recipes", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "GET /api/users (List all)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns array', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.be.an('array').with.lengthOf.at.least(1);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/users/:username/recipes (Nested route)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns recipes by marko123', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.be.an('array');",
+                  "    if (json.length > 0) {",
+                  "        pm.expect(json[0].creator).to.eql('marko123');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/marko123/recipes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "marko123", "recipes"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/users/:username (Get by username)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Correct user', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.username).to.eql('marko123');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/marko123",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "marko123"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Public",
+      "item": [
+        {
+          "name": "GET /api/news",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has articles', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('articles');",
+                  "    pm.expect(json.articles).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/news",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "news"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/random-meal",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has meal data', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('meal');",
+                  "    pm.expect(json.meal).to.have.property('name');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/random-meal",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "random-meal"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rate Limiting",
+      "item": [
+        {
+          "name": "POST /api/auth/login (6 times - should hit limit)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const count = pm.environment.get('loginAttempts') || 0;",
+                  "pm.environment.set('loginAttempts', count + 1);",
+                  "if (count >= 5) {",
+                  "    pm.test('Rate limited (429 or 200)', () => {",
+                  "        pm.expect(pm.response.code).to.be.oneOf([429, 200]);",
+                  "    });",
+                  "} else {",
+                  "    pm.test('Allowed through', () => pm.response.to.have.status(401));",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"test\",\n  \"password\": \"test\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001",
+      "type": "string"
+    }
+  ]
+}

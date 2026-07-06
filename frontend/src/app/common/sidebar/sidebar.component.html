@@ -1,0 +1,131 @@
+<aside 
+  class="sidebar transition-all duration-300 ease-in-out border-r-2 border-separator bg-light pt-20 relative"
+  [ngClass]="{
+    'w-64': isOpen,
+    'w-2': !isOpen
+  }"
+>
+
+  <button 
+    (click)="onToggle()"
+    class="fixed top-1/2 p-6 pl-4 -translate-y-1/2 w-8 h-8 rounded-r-full bg-so2 text-so1 transition-all duration-300 z-50 flex items-center justify-center shadow-lg"
+    [style.left.px]="isOpen ? 256 : 8"
+    [title]="isOpen ? 'Collapse sidebar' : 'Expand sidebar'"
+  >
+    <span class="text-md">{{ isOpen ? '◀' : '▶' }}</span>
+  </button>
+
+  <div *ngIf="isOpen" class="filters-section p-4">
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-dark mb-1">Pretraži po imenu/autoru</label>
+        <input 
+          type="text" 
+          placeholder="Unesite ime recepta ili autora..."
+          class="w-full bg-dark/10 border border-dark text-dark rounded-md p-2 text-base"
+          (input)="onSearchChange($event)"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-dark mb-1">Ukus jela</label>
+        <div class="bg-sw1 border border-sw2 rounded-md p-2">
+          <select class="w-full bg-sw1 text-sw2 text-base" (change)="onFilterChange($event, 1)">
+            <option value="">Svi ukusi</option>
+            <option value="slatko">Slatko</option>
+            <option value="slano">Slano</option>
+            <option value="ljuto">Ljuto</option>
+            <option value="kiselo">Kiselo</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-dark mb-1">Tip mesa</label>
+        <div class="bg-sa1 border border-sa2 rounded-md p-2">
+          <select class="w-full bg-sa1 text-sa2 text-base" (change)="onFilterChange($event, 2)">
+            <option value="">Sva mesa</option>
+            <option value="piletina">Piletina</option>
+            <option value="curetina">Ćuretina</option>
+            <option value="svinjetina">Svinjetina</option>
+            <option value="govedina">Govedina</option>
+            <option value="jagnjetina">Jagnjetina</option>
+            <option value="teletina">Teletina</option>
+            <option value="riba">Riba</option>
+            <option value="morski-plodovi">Morski plodovi</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-dark mb-1">Način pripreme</label>
+        <div class="bg-so1 border border-so2 rounded-md p-2">
+          <select class="w-full bg-so1 text-so2 text-base" (change)="onFilterChange($event, 3)">
+            <option value="">Svi načini</option>
+            <option value="przeno">Prženo</option>
+            <option value="peceno">Pečeno</option>
+            <option value="kuvano">Kuvano</option>
+            <option value="grilovano">Grilovano</option>
+            <option value="dimljeno">Dimljeno</option>
+            <option value="dinstano">Dinstano</option>
+            <option value="marinado">Marinado</option>
+            <option value="bareno">Bareno</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-dark mb-1">Poreklo</label>
+        <div class="bg-sp1 border border-sp2 rounded-md p-2">
+          <select class="w-full bg-sp1 text-sp2 text-base" (change)="onFilterChange($event, 4)">
+            <option value="">Sva porekla</option>
+            <option value="srbija">Srbija</option>
+            <option value="kina">Kina</option>
+            <option value="italija">Italija</option>
+            <option value="francuska">Francuska</option>
+            <option value="grcka">Grčka</option>
+            <option value="turska">Turska</option>
+            <option value="spanija">Španija</option>
+            <option value="indija">Indija</option>
+            <option value="japan">Japan</option>
+            <option value="meksiko">Meksiko</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-dark mb-1">Vreme pripreme</label>
+        <input 
+          type="number" 
+          placeholder="Minuti"
+          class="w-full bg-dark/10 border border-dark text-dark rounded-md p-2 text-base"
+          (change)="onFilterChange($event, 5)"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-dark mb-1">Tezina sastojaka</label>
+        <input 
+          type="number" 
+          placeholder="Kilogrami"
+          class="w-full bg-dark/10 border border-dark text-dark rounded-md p-2 text-base"
+          (change)="onFilterChange($event, 6)"
+        />
+      </div>
+    </div>
+
+    <!-- Export CSV button -->
+    <div class="mt-6 pt-4 border-t border-dark/20">
+      <button
+        class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-so2 text-light rounded-md hover:bg-so2/80 transition-colors text-sm font-medium"
+        (click)="onExportCSV()"
+        title="Preuzmi sve recepte kao CSV"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        Export CSV
+      </button>
+    </div>
+  </div>
+</aside>

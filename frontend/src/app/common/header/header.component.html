@@ -1,0 +1,47 @@
+<header
+    class="app-header fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 border-b-2 border-[#757473] bg-light/20 backdrop-blur-sm"
+>
+    <div class="flex items-center logo">
+        <a [routerLink]="['/home']" class="flex items-center">
+            <img src="assets/logo.png" alt="App Logo" class="h-16" />
+            <span class="text-xl text-sw2 font-semibold app-title">ecepti</span> 
+        </a>
+    </div>
+
+    <div class="relative profile-menu">
+        <button
+            (click)="toggleDropdown()"
+            class="bg-transparent border-none cursor-pointer profile-btn"
+        >
+            <img src="assets/user-gray.png" alt="Profile" class="h-9" />
+        </button>
+        <div
+            *ngIf="dropdownOpen"
+            class="dropdown absolute top-16 right-0 bg-[#e0e0f030] shadow-lg rounded min-w-[160px] z-20 flex flex-col items-center justify-center border border-[#757473]"
+        >
+            <button
+                class="dropdown-item px-4 py-2 text-right hover:bg-so1 w-full border-b border-[#757473] shadow-inner flex items-center justify-center"
+                [routerLink]="['/profile']"
+                routerLinkActive="router-link-active"
+                title="Profile"
+            >
+                <img src="assets/bookmark.png" alt="Profile" class="h-6 w-6" />
+            </button>
+            <button
+                class="dropdown-item px-4 py-2 text-right hover:bg-so1 w-full border-b border-[#757473] shadow-inner flex items-center justify-center"
+                [routerLink]="['/browse']"
+                routerLinkActive="router-link-active"
+                title="Browse"
+            >
+                <img src="assets/browsing.png" alt="Browse" class="h-6 w-6" />
+            </button>
+            <button
+                class="dropdown-item px-4 py-2 text-right hover:bg-so1 w-full flex items-center justify-center"
+                (click)="logout()"
+                title="Log Out"
+            >
+                <img src="assets/logout.png" alt="Log Out" class="h-6 w-6" />
+            </button>
+        </div>
+    </div>
+</header>

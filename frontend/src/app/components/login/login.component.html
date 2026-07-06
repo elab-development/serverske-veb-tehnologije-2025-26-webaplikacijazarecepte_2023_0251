@@ -1,0 +1,26 @@
+<div class="flex flex-col items-center justify-center w-full h-full gap-4">
+  <app-form
+    *ngIf="!forgotPasswordMode"
+    variant="login"
+    (formSubmit)="onFormSubmit($event)"
+  ></app-form>
+
+  <app-form
+    *ngIf="forgotPasswordMode"
+    [customFields]="[{name:'email',label:'Email',type:'email',placeholder:'Unesite vas email',required:true,validators:[]}]"
+    formTitle="Zaboravljena lozinka"
+    submitButtonText="Posalji reset link"
+    (formSubmit)="onFormSubmit($event)"
+  ></app-form>
+
+  <button
+    class="text-sm text-so2 hover:text-so2/80 underline"
+    (click)="toggleForgotPassword()"
+  >
+    {{ forgotPasswordMode ? 'Nazad na prijavu' : 'Zaboravili ste lozinku?' }}
+  </button>
+
+  <p *ngIf="forgotPasswordMessage" class="text-sm text-so2/70 text-center max-w-xs">
+    {{ forgotPasswordMessage }}
+  </p>
+</div>

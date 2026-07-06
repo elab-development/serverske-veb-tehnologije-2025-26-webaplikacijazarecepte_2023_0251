@@ -1,0 +1,193 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Recipe Application Data",
+  "description": "Schema for user and recipe data in the recipe application",
+  "type": "object",
+  "properties": {
+    "users": {
+      "type": "array",
+      "description": "Array of registered users",
+      "items": {
+        "$ref": "#/definitions/User"
+      }
+    },
+    "recipes": {
+      "type": "array",
+      "description": "Array of recipes created by users",
+      "items": {
+        "$ref": "#/definitions/Recipe"
+      }
+    }
+  },
+  "required": ["users", "recipes"],
+  "definitions": {
+    "User": {
+      "type": "object",
+      "description": "A registered user in the application",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the user",
+          "minimum": 1
+        },
+        "username": {
+          "type": "string",
+          "description": "User's chosen username",
+          "minLength": 3,
+          "maxLength": 30,
+          "pattern": "^[a-zA-Z0-9._-]+$"
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email address",
+          "format": "email"
+        },
+        "password": {
+          "type": "string",
+          "description": "User's password",
+          "minLength": 6
+        },
+        "liked": {
+          "type": "array",
+          "description": "Array of recipe IDs that the user has liked",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": ["id", "username", "email", "password", "liked"],
+      "additionalProperties": false
+    },
+    "Recipe": {
+      "type": "object",
+      "description": "A recipe created by a user",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the recipe",
+          "minimum": 1
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the recipe",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "creator": {
+          "type": "string",
+          "description": "Username of the user who created this recipe"
+        },
+        "taste": {
+          "type": "string",
+          "description": "Primary taste profile of the dish",
+          "enum": ["slatko", "slano", "ljuto", "kiselo"]
+        },
+        "meat": {
+          "type": "string",
+          "description": "Type of meat used (empty string for vegetarian dishes)",
+          "enum": ["", "piletina", "curetina", "svinjetina", "govedina", "jagnjetina", "teletina", "riba", "morski-plodovi"]
+        },
+        "occasion": {
+          "type": "string",
+          "description": "When this dish is typically served",
+          "enum": ["dorucak", "rucak", "vecera", "uzina", "desert"]
+        },
+        "cookingMethod": {
+          "type": "string",
+          "description": "Primary cooking method used to prepare the dish",
+          "enum": ["przeno", "peceno", "kuvano", "grilovano", "dimljeno", "dinstano", "marinado", "bareno"]
+        },
+        "timeToMake": {
+          "type": "integer",
+          "description": "Time required to prepare the dish in minutes",
+          "minimum": 1,
+          "maximum": 1440
+        },
+        "ingredientWeight": {
+          "type": "number",
+          "description": "Total weight of ingredients in kilograms",
+          "minimum": 0.1,
+          "maximum": 50
+        },
+        "ingredients": {
+          "type": "string",
+          "description": "List of ingredients with quantities as a single text field",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the recipe and cooking instructions",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "ratings": {
+          "type": "array",
+          "description": "Array of user ratings for this recipe",
+          "items": {
+            "$ref": "#/definitions/Rating"
+          },
+          "default": []
+        },
+        "averageRating": {
+          "type": "number",
+          "description": "Calculated average rating (1-5 stars)",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "totalRatings": {
+          "type": "integer",
+          "description": "Total number of ratings received",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "id", 
+        "name", 
+        "creator", 
+        "taste", 
+        "meat", 
+        "occasion", 
+        "cookingMethod", 
+        "timeToMake", 
+        "ingredientWeight", 
+        "ingredients", 
+        "description",
+        "ratings",
+        "averageRating",
+        "totalRatings"
+      ],
+      "additionalProperties": false
+    },
+    "Rating": {
+      "type": "object",
+      "description": "A user's rating for a recipe",
+      "properties": {
+        "username": {
+          "type": "string",
+          "description": "Username of the user who gave this rating"
+        },
+        "rating": {
+          "type": "integer",
+          "description": "Rating value from 1 to 5 stars",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "comment": {
+          "type": "string",
+          "description": "Optional comment from the user",
+          "maxLength": 500
+        },
+        "dateRated": {
+          "type": "string",
+          "description": "ISO date string when the rating was given",
+          "format": "date-time"
+        }
+      },
+      "required": ["username", "rating", "dateRated"],
+      "additionalProperties": false
+    }
+  }
+}

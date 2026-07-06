@@ -1,0 +1,13 @@
+FROM node:20-slim
+WORKDIR /usr/src/app
+# Instaliranje curl-a za healthcheck
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+COPY package*.json ./
+RUN npm install --omit=dev
+COPY . .
+EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+  CMD curl -f http://localhost:3000/health || exit 1
+
+CMD ["node", "src/index.js"]
