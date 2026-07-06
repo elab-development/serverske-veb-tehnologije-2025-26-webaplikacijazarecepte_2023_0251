@@ -81,10 +81,10 @@ export class FormComponent implements OnInit {
         this.formTitle = 'Registracija';
         this.formFields = [
           {
-            name: 'name',
-            label: 'Ime i prezime',
+            name: 'username',
+            label: 'Korisničko ime',
             type: 'text',
-            placeholder: 'Unesite vaše ime i prezime',
+            placeholder: 'Unesite vaše korisničko ime',
             required: true,
             validators: [Validators.required, Validators.minLength(2)]
           },

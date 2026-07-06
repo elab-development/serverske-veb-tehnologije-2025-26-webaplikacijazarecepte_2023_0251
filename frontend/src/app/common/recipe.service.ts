@@ -74,7 +74,7 @@ export class RecipeService {
       description: recipeData.instructions
     };
 
-    return this.http.post<Recipe>(`${this.apiUrl}/recipes`, newRecipeData).pipe(
+    return this.http.post<Recipe>(`${this.apiUrl}/recipes`, newRecipeData, { withCredentials: true }).pipe(
       tap((newRecipe: Recipe) => {
         this.allRecipes.push(newRecipe);
         this.recipesSubject.next([...this.allRecipes]);
@@ -104,10 +104,10 @@ export class RecipeService {
   
   rateRecipe(recipeId: number, username: string, rating: number, comment?: string): Observable<Recipe> {
     return this.http.post<Recipe>(`${this.apiUrl}/recipes/${recipeId}/rate`, {
-      username,
-      rating,
-      comment
-    }).pipe(
+          username,
+          rating,
+          comment
+        }, { withCredentials: true }).pipe(
       tap((updatedRecipe: Recipe) => {
         const index = this.allRecipes.findIndex(r => r.id === recipeId);
         if (index !== -1) {

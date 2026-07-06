@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const connectDB = async () => {
-  const uri = process.env.MONGODB_URI || 'mongodb://root:rootpassword@cloud-recepti-mongodb:27017/cloud-recepti?authSource=admin';
+  const uri = process.env.MONGODB_URI || 'mongodb://root:rootpassword@steh-recepti-mongodb:27017/steh-recepti?authSource=admin';
 
   try {
     await mongoose.connect(uri);

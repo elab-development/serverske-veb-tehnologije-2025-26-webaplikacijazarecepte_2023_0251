@@ -1,7 +1,7 @@
 const config = {
   mongodb: {
-    url: process.env.MONGODB_URI || 'mongodb://root:rootpassword@mongodb:27017/cloud-recepti?authSource=admin',
-    databaseName: 'cloud-recepti',
+    url: process.env.MONGODB_URI || 'mongodb://root:rootpassword@mongodb:27017/steh-recepti?authSource=admin',
+    databaseName: 'steh-recepti',
     options: {
       useNewUrlParser: true,
       useUnifiedTopology: true,

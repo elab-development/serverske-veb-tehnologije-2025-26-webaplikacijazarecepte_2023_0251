@@ -1,7 +1,7 @@
 {
-  "name": "cloud-recepti-backend",
+  "name": "steh-recepti-backend",
   "version": "1.0.0",
-  "description": "Backend API for cloud-recepti aplikaciju",
+  "description": "Backend API for steh-recepti aplikaciju",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",

@@ -19,9 +19,6 @@ coverage/
 npm-debug.log
 yarn-error.log
 
-# Screenshots
-*.png
-
 #Development tools
 tools/
 tests/

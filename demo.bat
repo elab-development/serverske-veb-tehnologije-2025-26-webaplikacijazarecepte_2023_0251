@@ -3,7 +3,7 @@
 :: Usage: demo.bat
 
 setlocal enabledelayedexpansion
-set MONGODB_URI=mongodb://root:rootpassword@localhost:27017/cloud-recepti?authSource=admin
+set MONGODB_URI=mongodb://root:rootpassword@localhost:27017/steh-recepti?authSource=admin
 set CONTAINER=steh-recepti-backend
 set MONGO=steh-recepti-mongodb
 
@@ -75,7 +75,7 @@ rem ==================================================================
 :m1a
 echo.
 echo --- M1: Current state ---
-docker compose exec %MONGO% mongo -u root -p rootpassword --authenticationDatabase admin cloud-recepti --eval "print('marko123 role:', db.users.findOne({username:'marko123'},{_id:0,username:1,role:1}).role); print('total users with role:', db.users.countDocuments({role:{\$exists:true}}))" 2>&1 | findstr /V "Implicit MongoDB mongo shell"
+docker compose exec %MONGO% mongo -u root -p rootpassword --authenticationDatabase admin steh-recepti --eval "print('marko123 role:', db.users.findOne({username:'marko123'},{_id:0,username:1,role:1}).role); print('total users with role:', db.users.countDocuments({role:{\$exists:true}}))" 2>&1 | findstr /V "Implicit MongoDB mongo shell"
 echo.
 echo Press any key to return...
 pause >nul
@@ -87,7 +87,7 @@ echo --- M1: Rolling back (removing role field)... ---
 docker compose exec %CONTAINER% npx migrate-mongo down 2>&1 | findstr "MIGRATED DOWN PASSED"
 echo.
 echo --- Checking: marko123 after rollback ---
-docker compose exec %MONGO% mongo -u root -p rootpassword --authenticationDatabase admin cloud-recepti --eval "var u=db.users.findOne({username:'marko123'},{_id:0,username:1,role:1}); print('Role exists:', u.role !== undefined ? u.role : 'NO (removed)')" 2>&1 | findstr "Role"
+docker compose exec %MONGO% mongo -u root -p rootpassword --authenticationDatabase admin steh-recepti --eval "var u=db.users.findOne({username:'marko123'},{_id:0,username:1,role:1}); print('Role exists:', u.role !== undefined ? u.role : 'NO (removed)')" 2>&1 | findstr "Role"
 echo.
 echo Press any key to return...
 pause >nul
@@ -99,7 +99,7 @@ echo --- M1: Re-applying (restoring role field)... ---
 docker compose exec %CONTAINER% npx migrate-mongo up 2>&1 | findstr "MIGRATED UP PASSED"
 echo.
 echo --- Checking: marko123 after re-apply ---
-docker compose exec %MONGO% mongo -u root -p rootpassword --authenticationDatabase admin cloud-recepti --eval "print('marko123 role:', db.users.findOne({username:'marko123'},{_id:0,username:1,role:1}).role)" 2>&1 | findstr "role:"
+docker compose exec %MONGO% mongo -u root -p rootpassword --authenticationDatabase admin steh-recepti --eval "print('marko123 role:', db.users.findOne({username:'marko123'},{_id:0,username:1,role:1}).role)" 2>&1 | findstr "role:"
 echo.
 echo Press any key to return...
 pause >nul
@@ -112,7 +112,7 @@ rem ==================================================================
 :m2a
 echo.
 echo --- M2: Current state ---
-docker compose exec %MONGO% mongo -u root -p rootpassword --authenticationDatabase admin cloud-recepti --eval "var u=db.users.findOne({username:'marko123'}); print('resetToken field exists:', u.resetToken !== undefined); print('resetTokenExpires field exists:', u.resetTokenExpires !== undefined)" 2>&1 | findstr "field exists"
+docker compose exec %MONGO% mongo -u root -p rootpassword --authenticationDatabase admin steh-recepti --eval "var u=db.users.findOne({username:'marko123'}); print('resetToken field exists:', u.resetToken !== undefined); print('resetTokenExpires field exists:', u.resetTokenExpires !== undefined)" 2>&1 | findstr "field exists"
 echo.
 echo Press any key to return...
 pause >nul
@@ -124,7 +124,7 @@ echo --- M2: Rolling back (removing reset token fields)... ---
 docker compose exec %CONTAINER% npx migrate-mongo down 2>&1 | findstr "MIGRATED DOWN PASSED"
 echo.
 echo --- Checking after rollback ---
-docker compose exec %MONGO% mongo -u root -p rootpassword --authenticationDatabase admin cloud-recepti --eval "var u=db.users.findOne({username:'marko123'}); print('resetToken exists:', u.resetToken !== undefined)" 2>&1 | findstr "resetToken"
+docker compose exec %MONGO% mongo -u root -p rootpassword --authenticationDatabase admin steh-recepti --eval "var u=db.users.findOne({username:'marko123'}); print('resetToken exists:', u.resetToken !== undefined)" 2>&1 | findstr "resetToken"
 echo.
 echo Press any key to return...
 pause >nul
@@ -146,7 +146,7 @@ rem ==================================================================
 :m3a
 echo.
 echo --- M3: Current state ---
-docker compose exec %MONGO% mongo -u root -p rootpassword --authenticationDatabase admin cloud-recepti --eval "var u=db.users.findOne({username:'marko123'}); print('liked exists:', u.liked !== undefined, '| value:', JSON.stringify(u.liked))" 2>&1 | findstr "liked"
+docker compose exec %MONGO% mongo -u root -p rootpassword --authenticationDatabase admin steh-recepti --eval "var u=db.users.findOne({username:'marko123'}); print('liked exists:', u.liked !== undefined, '| value:', JSON.stringify(u.liked))" 2>&1 | findstr "liked"
 echo.
 echo Press any key to return...
 pause >nul
@@ -182,7 +182,7 @@ echo ================================================================
 echo   M4: Ratings extracted to separate collection (CURRENT STATE)
 echo ================================================================
 echo.
-docker compose exec %MONGO% mongo -u root -p rootpassword --authenticationDatabase admin cloud-recepti --eval "print('Ratings collection count:', db.ratings.countDocuments({})); var r=db.recipes.findOne({id:1}); print('Recipe #1 ratings type:', typeof r.ratings[0]); print('Recipe #1 total ratings:', r.totalRatings)" 2>&1 | findstr "Ratings Recipe"
+docker compose exec %MONGO% mongo -u root -p rootpassword --authenticationDatabase admin steh-recepti --eval "print('Ratings collection count:', db.ratings.countDocuments({})); var r=db.recipes.findOne({id:1}); print('Recipe #1 ratings type:', typeof r.ratings[0]); print('Recipe #1 total ratings:', r.totalRatings)" 2>&1 | findstr "Ratings Recipe"
 echo.
 echo Press any key to return...
 pause >nul
@@ -197,7 +197,7 @@ echo.
 docker compose exec %CONTAINER% npx migrate-mongo down 2>&1 | findstr "MIGRATED DOWN PASSED"
 echo.
 echo --- After rollback ---
-docker compose exec %MONGO% mongo -u root -p rootpassword --authenticationDatabase admin cloud-recepti --eval "print('Ratings collection exists:', db.getCollectionNames().indexOf('ratings') >= 0 ? 'yes' : 'NO (dropped)'); var r=db.recipes.findOne({id:1}); print('Recipe #1 rating type:', typeof r.ratings[0]); print('Recipe #1 first rating:', JSON.stringify(r.ratings[0]))" 2>&1 | findstr "Ratings Recipe"
+docker compose exec %MONGO% mongo -u root -p rootpassword --authenticationDatabase admin steh-recepti --eval "print('Ratings collection exists:', db.getCollectionNames().indexOf('ratings') >= 0 ? 'yes' : 'NO (dropped)'); var r=db.recipes.findOne({id:1}); print('Recipe #1 rating type:', typeof r.ratings[0]); print('Recipe #1 first rating:', JSON.stringify(r.ratings[0]))" 2>&1 | findstr "Ratings Recipe"
 echo.
 echo ================================================================
 echo   Ratings are now EMBEDDED inside each recipe.
@@ -217,7 +217,7 @@ echo.
 docker compose exec %CONTAINER% npx migrate-mongo up 2>&1 | findstr "MIGRATED UP PASSED"
 echo.
 echo --- After re-apply ---
-docker compose exec %MONGO% mongo -u root -p rootpassword --authenticationDatabase admin cloud-recepti --eval "print('Ratings collection restored:', db.ratings.countDocuments({}), 'documents'); var r=db.recipes.findOne({id:1}); print('Recipe #1 ratings type:', typeof r.ratings[0]); print('Recipe #1 has', r.ratings.length, 'ObjectId refs')" 2>&1 | findstr "Ratings Recipe"
+docker compose exec %MONGO% mongo -u root -p rootpassword --authenticationDatabase admin steh-recepti --eval "print('Ratings collection restored:', db.ratings.countDocuments({}), 'documents'); var r=db.recipes.findOne({id:1}); print('Recipe #1 ratings type:', typeof r.ratings[0]); print('Recipe #1 has', r.ratings.length, 'ObjectId refs')" 2>&1 | findstr "Ratings Recipe"
 echo.
 echo ================================================================
 echo   Ratings are now back in a SEPARATE collection.

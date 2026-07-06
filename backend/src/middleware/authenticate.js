@@ -8,7 +8,7 @@ const authenticate = (req, res, next) => {
   }
 
   try {
-    const secret = process.env.JWT_SECRET || 'cloud-recepti-secret-key';
+    const secret = process.env.JWT_SECRET || 'steh-recepti-secret-key';
     const decoded = jwt.verify(token, secret);
     req.user = decoded;
     next();

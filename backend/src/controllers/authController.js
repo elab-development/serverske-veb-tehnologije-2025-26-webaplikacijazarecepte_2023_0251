@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const User = require('../models/User');
 
-const secret = process.env.JWT_SECRET || 'cloud-recepti-secret-key';
+const secret = process.env.JWT_SECRET || 'steh-recepti-secret-key';
 
 const generateToken = (user) => {
   return jwt.sign(
